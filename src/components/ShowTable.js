@@ -184,3 +184,70 @@ export function ShowTableDaftarTps({ currentPosts, searchTerm }) {
     </TableContainer>
   );
 }
+
+export function ShowTableDaftarKecamatan({ currentPosts, searchTerm }) {
+  let navigate = useNavigate();
+  const classes = useStyles();
+  return (
+    <TableContainer component={Paper} sx={{ width: "100%" }}>
+      <Table aria-label="simple table">
+        <TableHead className={classes.root}>
+          <TableRow>
+            <TableCell
+              sx={{ fontWeight: "bold" }}
+              className={classes.tableRightBorder}
+            >
+              Caleg
+            </TableCell>
+            <TableCell
+              sx={{ fontWeight: "bold" }}
+              className={classes.tableRightBorder}
+            >
+              Kode Kecamatan
+            </TableCell>
+            <TableCell sx={{ fontWeight: "bold" }}>Nama Kecamatan</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {currentPosts
+            .filter((val) => {
+              if (searchTerm === "") {
+                return val;
+              } else if (
+                val.idCaleg.nama
+                  .toUpperCase()
+                  .includes(searchTerm.toUpperCase()) ||
+                val.kodeKecamatan
+                  .toUpperCase()
+                  .includes(searchTerm.toUpperCase()) ||
+                val.namaKecamatan
+                  .toUpperCase()
+                  .includes(searchTerm.toUpperCase())
+              ) {
+                return val;
+              }
+            })
+            .map((user, index) => (
+              <TableRow
+                key={user._id}
+                sx={{
+                  "&:last-child td, &:last-child th": { border: 0 },
+                  "&:hover": { bgcolor: Colors.grey300 },
+                  cursor: "pointer"
+                }}
+                onClick={() => {
+                  navigate(`/daftarKecamatan/${user._id}`);
+                }}
+              >
+                <TableCell component="th" scope="row">
+                  {user.idCaleg.nama}
+                </TableCell>
+                <TableCell>{user.kodeKecamatan}</TableCell>
+                <TableCell>{user.namaKecamatan}</TableCell>
+              </TableRow>
+            ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
+  );
+}

@@ -85,10 +85,12 @@ const DaftarTps = () => {
   };
 
   useEffect(() => {
-    setInterval(async () => {
-      getTpsForDoc();
-      getTpsData();
-    }, 2000);
+    // setInterval(async () => {
+    //   getTpsForDoc();
+    //   getTpsData();
+    // }, 2000);
+    getTpsForDoc();
+    getTpsData();
     id && getTpsById();
   }, [id]);
 

@@ -13,15 +13,13 @@ import {
   Divider,
   Snackbar,
   Alert,
-  Paper,
-  Autocomplete
+  Paper
 } from "@mui/material";
 import SaveIcon from "@mui/icons-material/Save";
 
 const UbahTps = () => {
   const { user } = useContext(AuthContext);
   const [open, setOpen] = useState(false);
-  const [calegAwal, setCalegAwal] = useState("");
   const [caleg, setCaleg] = useState("");
   const [noTps, setNoTps] = useState("");
   const [namaTps, setNamaTps] = useState("");
@@ -31,14 +29,9 @@ const UbahTps = () => {
   const [passwordSaksi, setPasswordSaksi] = useState("");
   const [passwordSaksiAwal, setPasswordSaksiAwal] = useState("");
   const [error, setError] = useState(false);
-  const [calegs, setCalegs] = useState([]);
   const navigate = useNavigate();
   const { id } = useParams();
   const [loading, setLoading] = useState(false);
-
-  const calegOptions = calegs.map((caleg) => ({
-    label: `${caleg.nama}`
-  }));
 
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -48,11 +41,10 @@ const UbahTps = () => {
   };
 
   useEffect(() => {
-    getCalegsData();
-    getCalegById();
+    getTpsById();
   }, []);
 
-  const getCalegById = async () => {
+  const getTpsById = async () => {
     setLoading(true);
     const pickedTps = await axios.post(`${tempUrl}/tps/${id}`, {
       id: user._id,
@@ -64,51 +56,8 @@ const UbahTps = () => {
     setNamaSaksi(pickedTps.data.namaSaksi);
     setJumlahPemilih(pickedTps.data.jumlahPemilih);
     setPasswordSaksiAwal(pickedTps.data.passwordSaksi);
-    setCalegAwal(pickedTps.data.idCaleg.nama);
     setCaleg(pickedTps.data.idCaleg.nama);
     setLoading(false);
-  };
-
-  const getCalegsData = async () => {
-    setLoading(true);
-    const allCalegs = await axios.post(`${tempUrl}/usersCaleg`, {
-      id: user._id,
-      token: user.token
-    });
-    setCalegs(allCalegs.data);
-    setLoading(false);
-  };
-
-  const getNextKodeTps = async (value) => {
-    if (user.tipeUser === "ADMIN") {
-      const findCaleg = await axios.post(`${tempUrl}/findUserNama`, {
-        nama: value,
-        id: user._id,
-        token: user.token
-      });
-      const nextKodeTps = await axios.post(`${tempUrl}/tpsNextKode`, {
-        idCaleg: findCaleg.data._id,
-        id: user._id,
-        token: user.token
-      });
-      if (calegAwal === value) {
-        let decNextKodeTps = nextKodeTps.data - 1;
-        let tempNextKodeTps = decNextKodeTps.toLocaleString("en-US", {
-          minimumIntegerDigits: 3,
-          useGrouping: false
-        });
-        setNoTps(tempNextKodeTps);
-      } else {
-        setNoTps(nextKodeTps.data);
-      }
-    } else {
-      const nextKodeTps = await axios.post(`${tempUrl}/tpsNextKode`, {
-        idCaleg: user._id,
-        id: user._id,
-        token: user.token
-      });
-      setNoTps(nextKodeTps.data);
-    }
   };
 
   const updateTps = async (e) => {
@@ -130,13 +79,7 @@ const UbahTps = () => {
     } else {
       try {
         setLoading(true);
-        const findCaleg = await axios.post(`${tempUrl}/findUserNama`, {
-          nama: caleg,
-          id: user._id,
-          token: user.token
-        });
         await axios.post(`${tempUrl}/updateTps/${id}`, {
-          idCaleg: findCaleg.data._id,
           namaTps,
           noHpSaksi,
           namaSaksi,
@@ -170,27 +113,16 @@ const UbahTps = () => {
       <Paper sx={contentContainer} elevation={12}>
         <Box sx={showDataContainer}>
           <Box sx={showDataWrapper}>
-            <Typography sx={labelInput}>Kode Caleg</Typography>
-            <Autocomplete
+            <Typography sx={labelInput}>Caleg</Typography>
+            <TextField
               size="small"
-              disablePortal
-              id="combo-box-demo"
-              options={calegOptions}
-              renderInput={(params) => (
-                <TextField
-                  size="small"
-                  error={error && caleg.length === 0 && true}
-                  helperText={
-                    error && caleg.length === 0 && "Caleg harus diisi!"
-                  }
-                  {...params}
-                />
-              )}
-              onInputChange={(e, value) => {
-                setCaleg(value);
-                getNextKodeTps(value);
+              id="outlined-basic"
+              variant="outlined"
+              value={caleg}
+              InputProps={{
+                readOnly: true
               }}
-              value={{ label: caleg }}
+              sx={{ backgroundColor: Colors.grey400 }}
             />
             <Typography sx={[labelInput, spacingTop]}>No. TPS</Typography>
             <TextField

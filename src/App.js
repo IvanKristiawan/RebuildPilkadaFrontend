@@ -11,7 +11,7 @@ import {
   CssBaseline,
   Tooltip,
   Avatar,
-  Paper,
+  Paper
 } from "@mui/material";
 import { ErrorBoundary } from "react-error-boundary";
 import { Fallback } from "./components/Fallback";
@@ -20,6 +20,7 @@ import { AuthContext } from "./contexts/AuthContext";
 import { useStateContext } from "./contexts/ContextProvider";
 import MenuIcon from "@mui/icons-material/Menu";
 import PersonIcon from "@mui/icons-material/Person";
+import ReduceCapacityIcon from "@mui/icons-material/ReduceCapacity";
 import PersonPinIcon from "@mui/icons-material/PersonPin";
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 import ListAltIcon from "@mui/icons-material/ListAlt";
@@ -34,9 +35,12 @@ import {
   ProfilCaleg,
   UbahProfilCaleg,
   DaftarTps,
+  DaftarKecamatan,
+  TambahKecamatan,
+  UbahKecamatan,
   TambahTps,
   UbahTps,
-  TampilTps,
+  TampilTps
 } from "./pages/index";
 
 const App = () => {
@@ -92,7 +96,7 @@ const App = () => {
 
   const contentWrapper = {
     minHeight: "100vh",
-    width: open && screenSize >= 650 ? "80vw" : "100vw",
+    width: open && screenSize >= 650 ? "80vw" : "100vw"
   };
 
   useEffect(() => {
@@ -154,7 +158,7 @@ const App = () => {
                     <MenuItem
                       rootStyles={{
                         backgroundColor:
-                          window.location.pathname === "/user" && "#eaabff",
+                          window.location.pathname === "/user" && "#eaabff"
                       }}
                       icon={<PersonIcon name="user" />}
                     >
@@ -162,11 +166,18 @@ const App = () => {
                     </MenuItem>
                   </Link>
                 )}
-                <Divider />
                 {user.tipeUser === "CALEG" && (
                   <Link to="/profilCaleg" style={linkText}>
                     <MenuItem icon={<PersonPinIcon name="caleg" />}>
                       Caleg
+                    </MenuItem>
+                  </Link>
+                )}
+                <Divider />
+                {user.tipeUser && (
+                  <Link to="/daftarKecamatan" style={linkText}>
+                    <MenuItem icon={<ReduceCapacityIcon name="kecamatan" />}>
+                      Daftar Kecamatan
                     </MenuItem>
                   </Link>
                 )}
@@ -293,6 +304,39 @@ const App = () => {
                       </ADMINCALEGRoute>
                     }
                   />
+                  {/* Daftar Kecamatan */}
+                  <Route
+                    path="/daftarKecamatan"
+                    element={
+                      <ADMINCALEGRoute>
+                        <DaftarKecamatan />
+                      </ADMINCALEGRoute>
+                    }
+                  />
+                  <Route
+                    path="/daftarKecamatan/:id"
+                    element={
+                      <ADMINCALEGRoute>
+                        <DaftarKecamatan />
+                      </ADMINCALEGRoute>
+                    }
+                  />
+                  <Route
+                    path="/daftarKecamatan/:id/edit"
+                    element={
+                      <ADMINCALEGRoute>
+                        <UbahKecamatan />
+                      </ADMINCALEGRoute>
+                    }
+                  />
+                  <Route
+                    path="/daftarKecamatan/tambahKecamatan"
+                    element={
+                      <ADMINCALEGRoute>
+                        <TambahKecamatan />
+                      </ADMINCALEGRoute>
+                    }
+                  />
                   {/* TPS */}
                   <Route
                     path="/tps/:id"
@@ -317,7 +361,7 @@ export default App;
 const container = {
   display: "flex",
   height: "100%",
-  minHeight: "100vh",
+  minHeight: "100vh"
 };
 
 const sidebarIcon = {
@@ -326,35 +370,35 @@ const sidebarIcon = {
   padding: 1,
   marginLeft: 1,
   marginTop: 1,
-  cursor: "pointer",
+  cursor: "pointer"
 };
 
 const linkText = {
   textDecoration: "none",
-  color: "inherit",
+  color: "inherit"
 };
 
 const userAccount = {
   display: "flex",
-  p: 2,
+  p: 2
 };
 
 const userAccountWrapper = {
-  ml: 1,
+  ml: 1
 };
 
 const userNama = {
-  fontWeight: 600,
+  fontWeight: 600
 };
 
 const userTipe = {
-  color: "gray",
+  color: "gray"
 };
 
 const avatarContainer = {
-  ml: 10,
+  ml: 10
 };
 
 const avatarIcon = {
-  bgcolor: "purple",
+  bgcolor: "purple"
 };

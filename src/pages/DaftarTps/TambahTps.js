@@ -29,11 +29,12 @@ const TambahTps = () => {
   const [passwordSaksi, setPasswordSaksi] = useState("");
   const [error, setError] = useState(false);
   const [calegs, setCalegs] = useState([]);
+  const [kecamatans, setKecamatans] = useState([]);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
   const calegOptions = calegs.map((caleg) => ({
-    label: `${caleg.nama}`
+    label: `${caleg._id} - ${caleg.nama}`
   }));
 
   const handleClose = (event, reason) => {
@@ -45,6 +46,10 @@ const TambahTps = () => {
 
   useEffect(() => {
     getCalegsData();
+    getKecamatansData();
+    if (user.tipeUser === "CALEG") {
+      getNextKodeTps();
+    }
   }, []);
 
   const getCalegsData = async () => {
@@ -57,19 +62,30 @@ const TambahTps = () => {
     setLoading(false);
   };
 
+  const getKecamatansData = async () => {
+    setLoading(true);
+    const kecamatans = await axios.post(`${tempUrl}/kecamatans`, {
+      id: user._id,
+      token: user.token
+    });
+    setKecamatans(kecamatans.data);
+    setLoading(false);
+  };
+
   const getNextKodeTps = async (value) => {
     if (user.tipeUser === "ADMIN") {
-      const findCaleg = await axios.post(`${tempUrl}/findUserNama`, {
-        nama: value,
+      const findCaleg = await axios.post(`${tempUrl}/findUser/${value}`, {
         id: user._id,
         token: user.token
       });
-      const nextKodeTps = await axios.post(`${tempUrl}/tpsNextKode`, {
-        idCaleg: findCaleg.data._id,
-        id: user._id,
-        token: user.token
-      });
-      setNoTps(nextKodeTps.data);
+      if (findCaleg.data) {
+        const nextKodeTps = await axios.post(`${tempUrl}/tpsNextKode`, {
+          idCaleg: findCaleg.data._id,
+          id: user._id,
+          token: user.token
+        });
+        setNoTps(nextKodeTps.data);
+      }
     } else {
       const nextKodeTps = await axios.post(`${tempUrl}/tpsNextKode`, {
         idCaleg: user._id,
@@ -78,9 +94,11 @@ const TambahTps = () => {
       });
       setNoTps(nextKodeTps.data);
     }
+    setCaleg(value);
   };
 
   const saveTps = async (e) => {
+    let calegId = user._id;
     e.preventDefault();
     var date = new Date();
     var current_date =
@@ -100,13 +118,15 @@ const TambahTps = () => {
     } else {
       try {
         setLoading(true);
-        const findCaleg = await axios.post(`${tempUrl}/findUserNama`, {
-          nama: caleg,
-          id: user._id,
-          token: user.token
-        });
+        if (user.tipeUser === "ADMIN") {
+          const findCaleg = await axios.post(`${tempUrl}/findUser/${caleg}`, {
+            id: user._id,
+            token: user.token
+          });
+          calegId = findCaleg.data._id;
+        }
         await axios.post(`${tempUrl}/saveTps`, {
-          idCaleg: findCaleg.data._id,
+          idCaleg: calegId,
           noTps,
           namaTps,
           noHpSaksi,
@@ -140,28 +160,7 @@ const TambahTps = () => {
       <Paper sx={contentContainer} elevation={12}>
         <Box sx={showDataContainer}>
           <Box sx={showDataWrapper}>
-            <Typography sx={labelInput}>Kode Caleg</Typography>
-            <Autocomplete
-              size="small"
-              disablePortal
-              id="combo-box-demo"
-              options={calegOptions}
-              renderInput={(params) => (
-                <TextField
-                  size="small"
-                  error={error && caleg.length === 0 && true}
-                  helperText={
-                    error && caleg.length === 0 && "Caleg harus diisi!"
-                  }
-                  {...params}
-                />
-              )}
-              onInputChange={(e, value) => {
-                setCaleg(value);
-                getNextKodeTps(value);
-              }}
-            />
-            <Typography sx={[labelInput, spacingTop]}>No. TPS</Typography>
+            <Typography sx={labelInput}>No. TPS</Typography>
             <TextField
               size="small"
               error={error && noTps.length === 0 && true}
@@ -174,6 +173,36 @@ const TambahTps = () => {
               }}
               sx={{ backgroundColor: Colors.grey400 }}
             />
+            {user.tipeUser === "ADMIN" && (
+              <>
+                <Typography sx={[labelInput, spacingTop]}>
+                  Kode Caleg
+                </Typography>
+                <Autocomplete
+                  size="small"
+                  disablePortal
+                  id="combo-box-demo"
+                  options={calegOptions}
+                  renderInput={(params) => (
+                    <TextField
+                      size="small"
+                      error={error && caleg.length === 0 && true}
+                      helperText={
+                        error && caleg.length === 0 && "Caleg harus diisi!"
+                      }
+                      {...params}
+                    />
+                  )}
+                  onInputChange={(e, value) => {
+                    if (value) {
+                      getNextKodeTps(value.split(" ", 1)[0]);
+                    } else {
+                      setNoTps("");
+                    }
+                  }}
+                />
+              </>
+            )}
             <Typography sx={[labelInput, spacingTop]}>Nama TPS</Typography>
             <TextField
               size="small"

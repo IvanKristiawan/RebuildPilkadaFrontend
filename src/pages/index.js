@@ -15,3 +15,7 @@ export { default as TambahTps } from "./DaftarTps/TambahTps";
 export { default as UbahTps } from "./DaftarTps/UbahTps";
 // TPS
 export { default as TampilTps } from "./Tps/TampilTps";
+// Kecamatan
+export { default as DaftarKecamatan } from "./Kecamatan/DaftarKecamatan";
+export { default as TambahKecamatan } from "./Kecamatan/TambahKecamatan";
+export { default as UbahKecamatan } from "./Kecamatan/UbahKecamatan";
