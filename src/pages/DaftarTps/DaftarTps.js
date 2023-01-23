@@ -33,11 +33,13 @@ const DaftarTps = () => {
 
   const [isFetchError, setIsFetchError] = useState(false);
   const [caleg, setCaleg] = useState("");
+  const [kecamatan, setKecamatan] = useState("");
   const [noTps, setNoTps] = useState("");
   const [namaTps, setNamaTps] = useState("");
   const [noHpSaksi, setNoHpSaksi] = useState("");
   const [namaSaksi, setNamaSaksi] = useState("");
   const [jumlahPemilih, setJumlahPemilih] = useState("");
+  const [targetSuara, setTargetSuara] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [tpsData, setTpsData] = useState([]);
   const [tpsForDoc, setTpsForDoc] = useState([]);
@@ -46,11 +48,13 @@ const DaftarTps = () => {
 
   const columns = [
     { title: "Caleg", field: "caleg" },
+    { title: "Kecamatan", field: "kecamatan" },
     { title: "No. TPS", field: "noTps" },
     { title: "Nama TPS", field: "namaTps" },
     { title: "No. HP Saksi", field: "noHpSaksi" },
     { title: "Nama Saksi", field: "namaSaksi" },
-    { title: "Jumlah", field: "jumlahPemilih" }
+    { title: "Jumlah", field: "jumlahPemilih" },
+    { title: "Target Suara", field: "targetSuara" }
   ];
 
   const [loading, setLoading] = useState(false);
@@ -65,11 +69,22 @@ const DaftarTps = () => {
       return val;
     } else if (
       val.idCaleg.nama.toUpperCase().includes(searchTerm.toUpperCase()) ||
+      val.idKecamatan._id.toUpperCase().includes(searchTerm.toUpperCase()) ||
+      val.idKecamatan.namaKecamatan
+        .toUpperCase()
+        .includes(searchTerm.toUpperCase()) ||
       val.noTps.toUpperCase().includes(searchTerm.toUpperCase()) ||
       val.namaTps.toUpperCase().includes(searchTerm.toUpperCase()) ||
       val.noHpSaksi.toUpperCase().includes(searchTerm.toUpperCase()) ||
       val.namaSaksi.toUpperCase().includes(searchTerm.toUpperCase()) ||
-      val.jumlahPemilih.toUpperCase().includes(searchTerm.toUpperCase())
+      val.jumlahPemilih
+        .toString()
+        .toUpperCase()
+        .includes(searchTerm.toUpperCase()) ||
+      val.targetSuara
+        .toString()
+        .toUpperCase()
+        .includes(searchTerm.toUpperCase())
     ) {
       return val;
     }
@@ -141,11 +156,15 @@ const DaftarTps = () => {
         token: user.token
       });
       setCaleg(pickedTps.data.idCaleg.nama);
+      setKecamatan(
+        `${pickedTps.data.idKecamatan._id} - ${pickedTps.data.idKecamatan.namaKecamatan}`
+      );
       setNoTps(pickedTps.data.noTps);
       setNamaTps(pickedTps.data.namaTps);
       setNoHpSaksi(pickedTps.data.noHpSaksi);
       setNamaSaksi(pickedTps.data.namaSaksi);
-      setJumlahPemilih(pickedTps.data.jumlahPemilih);
+      setJumlahPemilih(pickedTps.data.jumlahPemilih.toLocaleString());
+      setTargetSuara(pickedTps.data.targetSuara.toLocaleString());
     }
   };
 
@@ -157,10 +176,12 @@ const DaftarTps = () => {
         token: user.token
       });
       setNoTps("");
+      setKecamatan("");
       setNamaTps("");
       setNoHpSaksi("");
       setNamaSaksi("");
       setJumlahPemilih("");
+      setTargetSuara("");
       setLoading(false);
       navigate("/daftarTps");
     } catch (error) {
@@ -244,6 +265,16 @@ const DaftarTps = () => {
                 }}
                 value={caleg}
               />
+              <Typography sx={[labelInput, spacingTop]}>Kecamatan</Typography>
+              <TextField
+                size="small"
+                id="outlined-basic"
+                variant="filled"
+                InputProps={{
+                  readOnly: true
+                }}
+                value={kecamatan}
+              />
               <Typography sx={[labelInput, spacingTop]}>No. TPS</Typography>
               <TextField
                 size="small"
@@ -300,6 +331,18 @@ const DaftarTps = () => {
                 }}
                 value={jumlahPemilih}
               />
+              <Typography sx={[labelInput, spacingTop]}>
+                Target Suara
+              </Typography>
+              <TextField
+                size="small"
+                id="outlined-basic"
+                variant="filled"
+                InputProps={{
+                  readOnly: true
+                }}
+                value={targetSuara}
+              />
             </Box>
           </Box>
           <Divider sx={dividerStyle} />
@@ -312,6 +355,7 @@ const DaftarTps = () => {
         <ShowTableDaftarTps
           currentPosts={currentPosts}
           searchTerm={searchTerm}
+          tipeUser={user.tipeUser}
         />
       </Box>
       <Box sx={tableContainer}>

@@ -114,7 +114,7 @@ const TambahKecamatan = () => {
         }
         await axios.post(`${tempUrl}/saveKecamatan`, {
           idCaleg: calegId,
-          kodeKecamatan,
+          _id: kodeKecamatan,
           namaKecamatan,
           tglInput: current_date,
           jamInput: current_time,

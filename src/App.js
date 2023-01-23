@@ -15,6 +15,7 @@ import {
 } from "@mui/material";
 import { ErrorBoundary } from "react-error-boundary";
 import { Fallback } from "./components/Fallback";
+import { ScrollToTop } from "./components";
 import { Colors } from "./constants/styles";
 import { AuthContext } from "./contexts/AuthContext";
 import { useStateContext } from "./contexts/ContextProvider";
@@ -213,6 +214,7 @@ const App = () => {
             )}
             <Box sx={contentWrapper}>
               <ErrorBoundary FallbackComponent={Fallback}>
+                <ScrollToTop />
                 <Routes>
                   {!user ? (
                     <Route path="/" element={<Home />} />

@@ -9,7 +9,7 @@ const Header = () => {
   const { screenSize } = useStateContext();
 
   const container = {
-    height: screenSize >= 650 ? "65px" : "120px",
+    height: "65px",
     backgroundColor: "black"
   };
 

@@ -43,7 +43,7 @@ const DaftarKecamatan = () => {
 
   const columns = [
     { title: "Caleg", field: "caleg" },
-    { title: "Kode Kecamatan", field: "kodeKecamatan" },
+    { title: "Kode Kecamatan", field: "_id" },
     { title: "Nama Kecamatan", field: "namaKecamatan" }
   ];
 
@@ -59,7 +59,7 @@ const DaftarKecamatan = () => {
       return val;
     } else if (
       val.idCaleg.nama.toUpperCase().includes(searchTerm.toUpperCase()) ||
-      val.kodeKecamatan.toUpperCase().includes(searchTerm.toUpperCase()) ||
+      val._id.toUpperCase().includes(searchTerm.toUpperCase()) ||
       val.namaKecamatan.toUpperCase().includes(searchTerm.toUpperCase())
     ) {
       return val;
@@ -134,7 +134,7 @@ const DaftarKecamatan = () => {
         token: user.token
       });
       setCaleg(pickedKecamatan.data.idCaleg.nama);
-      setKodeKecamatan(pickedKecamatan.data.kodeKecamatan);
+      setKodeKecamatan(pickedKecamatan.data._id);
       setNamaKecamatan(pickedKecamatan.data.namaKecamatan);
     }
   };

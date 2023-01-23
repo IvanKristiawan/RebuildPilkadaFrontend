@@ -92,7 +92,7 @@ export function ShowTableUser({ currentPosts, searchTerm }) {
   );
 }
 
-export function ShowTableDaftarTps({ currentPosts, searchTerm }) {
+export function ShowTableDaftarTps({ currentPosts, searchTerm, tipeUser }) {
   let navigate = useNavigate();
   const classes = useStyles();
   return (
@@ -100,11 +100,19 @@ export function ShowTableDaftarTps({ currentPosts, searchTerm }) {
       <Table aria-label="simple table">
         <TableHead className={classes.root}>
           <TableRow>
+            {tipeUser === "ADMIN" && (
+              <TableCell
+                sx={{ fontWeight: "bold" }}
+                className={classes.tableRightBorder}
+              >
+                Caleg
+              </TableCell>
+            )}
             <TableCell
               sx={{ fontWeight: "bold" }}
               className={classes.tableRightBorder}
             >
-              Caleg
+              Kecamatan
             </TableCell>
             <TableCell
               sx={{ fontWeight: "bold" }}
@@ -122,15 +130,9 @@ export function ShowTableDaftarTps({ currentPosts, searchTerm }) {
               sx={{ fontWeight: "bold" }}
               className={classes.tableRightBorder}
             >
-              Nama Saksi
+              Jumlah Pemilih
             </TableCell>
-            <TableCell
-              sx={{ fontWeight: "bold" }}
-              className={classes.tableRightBorder}
-            >
-              No. HP Saksi
-            </TableCell>
-            <TableCell sx={{ fontWeight: "bold" }}>Jumlah Pemilih</TableCell>
+            <TableCell sx={{ fontWeight: "bold" }}>Target Suara</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -142,15 +144,23 @@ export function ShowTableDaftarTps({ currentPosts, searchTerm }) {
                 val.idCaleg.nama
                   .toUpperCase()
                   .includes(searchTerm.toUpperCase()) ||
-                val.noTps.toUpperCase().includes(searchTerm.toUpperCase()) ||
-                val.namaTps.toUpperCase().includes(searchTerm.toUpperCase()) ||
-                val.noHpSaksi
+                val.idKecamatan._id
                   .toUpperCase()
                   .includes(searchTerm.toUpperCase()) ||
+                val.idKecamatan.namaKecamatan
+                  .toUpperCase()
+                  .includes(searchTerm.toUpperCase()) ||
+                val.noTps.toUpperCase().includes(searchTerm.toUpperCase()) ||
+                val.namaTps.toUpperCase().includes(searchTerm.toUpperCase()) ||
                 val.namaSaksi
                   .toUpperCase()
                   .includes(searchTerm.toUpperCase()) ||
                 val.jumlahPemilih
+                  .toString()
+                  .toUpperCase()
+                  .includes(searchTerm.toUpperCase()) ||
+                val.targetSuara
+                  .toString()
                   .toUpperCase()
                   .includes(searchTerm.toUpperCase())
               ) {
@@ -169,14 +179,16 @@ export function ShowTableDaftarTps({ currentPosts, searchTerm }) {
                   navigate(`/daftarTps/${user._id}`);
                 }}
               >
-                <TableCell component="th" scope="row">
-                  {user.idCaleg.nama}
-                </TableCell>
+                {tipeUser === "ADMIN" && (
+                  <TableCell component="th" scope="row">
+                    {user.idCaleg.nama}
+                  </TableCell>
+                )}
+                <TableCell>{`${user.idKecamatan._id} - ${user.idKecamatan.namaKecamatan}`}</TableCell>
                 <TableCell>{user.noTps}</TableCell>
                 <TableCell>{user.namaTps}</TableCell>
-                <TableCell>{user.namaSaksi}</TableCell>
-                <TableCell>{user.noHpSaksi}</TableCell>
-                <TableCell>{user.jumlahPemilih}</TableCell>
+                <TableCell>{user.jumlahPemilih.toLocaleString()}</TableCell>
+                <TableCell>{user.targetSuara.toLocaleString()}</TableCell>
               </TableRow>
             ))}
         </TableBody>
@@ -203,9 +215,9 @@ export function ShowTableDaftarKecamatan({ currentPosts, searchTerm }) {
               sx={{ fontWeight: "bold" }}
               className={classes.tableRightBorder}
             >
-              Kode Kecamatan
+              Kode
             </TableCell>
-            <TableCell sx={{ fontWeight: "bold" }}>Nama Kecamatan</TableCell>
+            <TableCell sx={{ fontWeight: "bold" }}>Nama</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -217,9 +229,7 @@ export function ShowTableDaftarKecamatan({ currentPosts, searchTerm }) {
                 val.idCaleg.nama
                   .toUpperCase()
                   .includes(searchTerm.toUpperCase()) ||
-                val.kodeKecamatan
-                  .toUpperCase()
-                  .includes(searchTerm.toUpperCase()) ||
+                val._id.toUpperCase().includes(searchTerm.toUpperCase()) ||
                 val.namaKecamatan
                   .toUpperCase()
                   .includes(searchTerm.toUpperCase())
@@ -242,7 +252,7 @@ export function ShowTableDaftarKecamatan({ currentPosts, searchTerm }) {
                 <TableCell component="th" scope="row">
                   {user.idCaleg.nama}
                 </TableCell>
-                <TableCell>{user.kodeKecamatan}</TableCell>
+                <TableCell>{user._id}</TableCell>
                 <TableCell>{user.namaKecamatan}</TableCell>
               </TableRow>
             ))}
