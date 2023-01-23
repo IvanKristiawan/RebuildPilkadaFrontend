@@ -20,6 +20,7 @@ import { Colors } from "./constants/styles";
 import { AuthContext } from "./contexts/AuthContext";
 import { useStateContext } from "./contexts/ContextProvider";
 import MenuIcon from "@mui/icons-material/Menu";
+import BarChartIcon from "@mui/icons-material/BarChart";
 import PersonIcon from "@mui/icons-material/Person";
 import ReduceCapacityIcon from "@mui/icons-material/ReduceCapacity";
 import PersonPinIcon from "@mui/icons-material/PersonPin";
@@ -33,6 +34,7 @@ import {
   DaftarUser,
   TambahUser,
   UbahUser,
+  DashboardTps,
   ProfilCaleg,
   UbahProfilCaleg,
   DaftarTps,
@@ -168,11 +170,19 @@ const App = () => {
                   </Link>
                 )}
                 {user.tipeUser === "CALEG" && (
-                  <Link to="/profilCaleg" style={linkText}>
-                    <MenuItem icon={<PersonPinIcon name="caleg" />}>
-                      Caleg
-                    </MenuItem>
-                  </Link>
+                  <>
+                    <Link to="/dashboardTps" style={linkText}>
+                      <MenuItem icon={<BarChartIcon name="dashboardTps" />}>
+                        Dashboard TPS
+                      </MenuItem>
+                    </Link>
+                    <Divider />
+                    <Link to="/profilCaleg" style={linkText}>
+                      <MenuItem icon={<PersonPinIcon name="caleg" />}>
+                        Caleg
+                      </MenuItem>
+                    </Link>
+                  </>
                 )}
                 <Divider />
                 {user.tipeUser && (
@@ -254,6 +264,15 @@ const App = () => {
                       <ADMINRoute>
                         <TambahUser />
                       </ADMINRoute>
+                    }
+                  />
+                  {/* Dashboard Tps */}
+                  <Route
+                    path="/dashboardTps"
+                    element={
+                      <CALEGRoute>
+                        <DashboardTps />
+                      </CALEGRoute>
                     }
                   />
                   {/* Caleg */}

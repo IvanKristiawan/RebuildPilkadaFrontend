@@ -103,11 +103,6 @@ const showDataWrapper = {
   }
 };
 
-const textFieldStyle = {
-  display: "flex",
-  mt: 4
-};
-
 const labelInput = {
   fontWeight: "600",
   marginLeft: 1
@@ -115,14 +110,4 @@ const labelInput = {
 
 const spacingTop = {
   mt: 4
-};
-
-const secondWrapper = {
-  marginLeft: {
-    sm: 4
-  },
-  marginTop: {
-    sm: 0,
-    xs: 4
-  }
 };
