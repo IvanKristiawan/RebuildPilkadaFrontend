@@ -1,6 +1,5 @@
 import React, { useState, useContext, useEffect } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../contexts/AuthContext";
 import { tempUrl } from "../../contexts/ContextProvider";
 import { Loader } from "../../components";
@@ -12,7 +11,8 @@ import {
   Button,
   Snackbar,
   Alert,
-  Autocomplete
+  Autocomplete,
+  Paper
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import { Chart } from "react-google-charts";
@@ -27,18 +27,6 @@ const DashboardTps = () => {
   const [loading, setLoading] = useState(false);
   const [dataBarChart, setDataBarChart] = useState([]);
   const [totalDataBarChart, setTotalDataBarChart] = useState([]);
-
-  let optionsTpsPerKecamatan = {
-    chart: {
-      title: "Suara Tps Per Kecamatan"
-    }
-  };
-
-  let optionsTotalTpsKecamatan = {
-    chart: {
-      title: "Suara Total Tps Kecamatan"
-    }
-  };
 
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -132,24 +120,30 @@ const DashboardTps = () => {
 
       {openChart && (
         <>
-          <Box sx={spacingTop}>
+          <Divider sx={dividerStyle} />
+          <Paper sx={graphContainer} elevation={8}>
+            <Typography sx={[labelInput, graphTitle]}>
+              Suara TPS Per Kecamatan
+            </Typography>
             <Chart
               chartType="Bar"
               width="800px"
               height="400px"
               data={dataBarChart}
-              options={optionsTpsPerKecamatan}
             />
-          </Box>
-          <Box sx={spacingTop}>
+          </Paper>
+          <Divider sx={dividerStyle} />
+          <Paper sx={graphContainer} elevation={8}>
+            <Typography sx={[labelInput, graphTitle]}>
+              Akumulasi Total TPS Kecamatan
+            </Typography>
             <Chart
               chartType="Bar"
-              width="800px"
+              width="400px"
               height="400px"
               data={totalDataBarChart}
-              options={optionsTotalTpsKecamatan}
             />
-          </Box>
+          </Paper>
         </>
       )}
       <Box sx={spacingTop}>
@@ -196,4 +190,12 @@ const spacingTop = {
 
 const alertBox = {
   width: "100%"
+};
+
+const graphContainer = {
+  p: 6
+};
+
+const graphTitle = {
+  mb: 4
 };
