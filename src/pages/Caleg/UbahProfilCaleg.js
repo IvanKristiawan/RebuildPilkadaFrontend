@@ -21,6 +21,7 @@ const UbahProfilCaleg = () => {
   const { user, dispatch } = useContext(AuthContext);
   const [nama, setNama] = useState("");
   const [tipeUser, setTipeUser] = useState("");
+  const [targetSuaraCaleg, setTargetSuaraCaleg] = useState("");
   const [password, setPassword] = useState("");
   const [open, setOpen] = useState(false);
   const [error, setError] = useState(false);
@@ -47,12 +48,13 @@ const UbahProfilCaleg = () => {
     });
     setNama(response.data.nama);
     setTipeUser(response.data.tipeUser);
+    setTargetSuaraCaleg(response.data.targetSuaraCaleg);
     setLoading(false);
   };
 
   const updateUser = async (e) => {
     e.preventDefault();
-    let isFailedValidation = nama.length === 0;
+    let isFailedValidation = nama.length === 0 || targetSuaraCaleg.length === 0;
 
     if (isFailedValidation) {
       setError(true);
@@ -65,13 +67,18 @@ const UbahProfilCaleg = () => {
         setLoading(true);
         await axios.post(`${tempUrl}/updateUser/${id}`, {
           nama,
+          targetSuaraCaleg,
           password,
           id: user._id,
           token: user.token
         });
         setLoading(false);
-        logoutButtonHandler();
-        navigate("/");
+        if (password) {
+          logoutButtonHandler();
+          navigate("/");
+        } else {
+          navigate("/profilCaleg");
+        }
       } catch (error) {
         console.log(error);
       }
@@ -117,6 +124,27 @@ const UbahProfilCaleg = () => {
                 readOnly: true
               }}
               sx={{ backgroundColor: Colors.grey400 }}
+            />
+            <Typography sx={[labelInput, spacingTop]}>
+              Target Suara Caleg
+              {targetSuaraCaleg !== 0 &&
+                !isNaN(parseInt(targetSuaraCaleg)) &&
+                ` : ${parseInt(targetSuaraCaleg).toLocaleString()}`}
+            </Typography>
+            <TextField
+              size="small"
+              error={error && targetSuaraCaleg.length === 0 && true}
+              helperText={
+                error &&
+                targetSuaraCaleg.length === 0 &&
+                "Target Suara Caleg harus diisi!"
+              }
+              id="outlined-basic"
+              variant="outlined"
+              value={targetSuaraCaleg}
+              onChange={(e) =>
+                setTargetSuaraCaleg(e.target.value.toUpperCase())
+              }
             />
             <Typography sx={[labelInput, spacingTop]}>
               Password (baru)

@@ -118,6 +118,16 @@ const DashboardTps = () => {
         }}
       />
 
+      <Box sx={spacingTop}>
+        <Button
+          variant="contained"
+          startIcon={<SearchIcon />}
+          onClick={cariTpsByKecamatan}
+        >
+          Cari
+        </Button>
+      </Box>
+
       {openChart && (
         <>
           <Divider sx={dividerStyle} />
@@ -126,8 +136,8 @@ const DashboardTps = () => {
               Suara TPS Per Kecamatan
             </Typography>
             <Chart
-              chartType="Bar"
-              width="800px"
+              chartType="BarChart"
+              width="100%"
               height="400px"
               data={dataBarChart}
             />
@@ -138,23 +148,14 @@ const DashboardTps = () => {
               Akumulasi Total TPS Kecamatan
             </Typography>
             <Chart
-              chartType="Bar"
-              width="400px"
+              chartType="ColumnChart"
+              width="100%"
               height="400px"
               data={totalDataBarChart}
             />
           </Paper>
         </>
       )}
-      <Box sx={spacingTop}>
-        <Button
-          variant="contained"
-          startIcon={<SearchIcon />}
-          onClick={cariTpsByKecamatan}
-        >
-          Cari
-        </Button>
-      </Box>
       {error && (
         <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
           <Alert onClose={handleClose} severity="error" sx={alertBox}>

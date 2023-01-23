@@ -34,24 +34,14 @@ export function ShowTableUser({ currentPosts, searchTerm }) {
       <Table aria-label="simple table">
         <TableHead className={classes.root}>
           <TableRow>
-            <TableCell
-              sx={{ fontWeight: "bold" }}
-              className={classes.tableRightBorder}
-            >
-              Username
-            </TableCell>
-            <TableCell
-              sx={{ fontWeight: "bold" }}
-              className={classes.tableRightBorder}
-            >
+            <TableCell className={classes.tableRightBorder}>Username</TableCell>
+            <TableCell className={classes.tableRightBorder}>
               Tipe User
             </TableCell>
-            <TableCell
-              sx={{ fontWeight: "bold" }}
-              className={classes.tableRightBorder}
-            >
-              Password
+            <TableCell className={classes.tableRightBorder}>
+              Target Suara Caleg
             </TableCell>
+            <TableCell className={classes.tableRightBorder}>Password</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -62,6 +52,10 @@ export function ShowTableUser({ currentPosts, searchTerm }) {
               } else if (
                 val.nama.toUpperCase().includes(searchTerm.toUpperCase()) ||
                 val.tipeUser.toUpperCase().includes(searchTerm.toUpperCase()) ||
+                val.targetSuaraCaleg
+                  .toString()
+                  .toUpperCase()
+                  .includes(searchTerm.toUpperCase()) ||
                 val.password.toUpperCase().includes(searchTerm.toUpperCase())
               ) {
                 return val;
@@ -83,6 +77,7 @@ export function ShowTableUser({ currentPosts, searchTerm }) {
                   {user.nama}
                 </TableCell>
                 <TableCell>{user.tipeUser}</TableCell>
+                <TableCell>{user.targetSuaraCaleg}</TableCell>
                 <TableCell>{user.password}</TableCell>
               </TableRow>
             ))}
@@ -101,38 +96,17 @@ export function ShowTableDaftarTps({ currentPosts, searchTerm, tipeUser }) {
         <TableHead className={classes.root}>
           <TableRow>
             {tipeUser === "ADMIN" && (
-              <TableCell
-                sx={{ fontWeight: "bold" }}
-                className={classes.tableRightBorder}
-              >
-                Caleg
-              </TableCell>
+              <TableCell className={classes.tableRightBorder}>Caleg</TableCell>
             )}
-            <TableCell
-              sx={{ fontWeight: "bold" }}
-              className={classes.tableRightBorder}
-            >
+            <TableCell className={classes.tableRightBorder}>
               Kecamatan
             </TableCell>
-            <TableCell
-              sx={{ fontWeight: "bold" }}
-              className={classes.tableRightBorder}
-            >
-              No. TPS
-            </TableCell>
-            <TableCell
-              sx={{ fontWeight: "bold" }}
-              className={classes.tableRightBorder}
-            >
-              Nama TPS
-            </TableCell>
-            <TableCell
-              sx={{ fontWeight: "bold" }}
-              className={classes.tableRightBorder}
-            >
+            <TableCell className={classes.tableRightBorder}>No. TPS</TableCell>
+            <TableCell className={classes.tableRightBorder}>Nama TPS</TableCell>
+            <TableCell className={classes.tableRightBorder}>
               Jumlah Pemilih
             </TableCell>
-            <TableCell sx={{ fontWeight: "bold" }}>Target Suara</TableCell>
+            <TableCell>Target Suara</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -205,19 +179,9 @@ export function ShowTableDaftarKecamatan({ currentPosts, searchTerm }) {
       <Table aria-label="simple table">
         <TableHead className={classes.root}>
           <TableRow>
-            <TableCell
-              sx={{ fontWeight: "bold" }}
-              className={classes.tableRightBorder}
-            >
-              Caleg
-            </TableCell>
-            <TableCell
-              sx={{ fontWeight: "bold" }}
-              className={classes.tableRightBorder}
-            >
-              Kode
-            </TableCell>
-            <TableCell sx={{ fontWeight: "bold" }}>Nama</TableCell>
+            <TableCell className={classes.tableRightBorder}>Caleg</TableCell>
+            <TableCell className={classes.tableRightBorder}>Kode</TableCell>
+            <TableCell>Nama</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>

@@ -24,6 +24,7 @@ const TambahUser = () => {
   const [nama, setNama] = useState("");
   const [password, setPassword] = useState("");
   const [tipeUser, setTipeUser] = useState("");
+  const [targetSuaraCaleg, setTargetSuaraCaleg] = useState("");
   const [error, setError] = useState(false);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -39,7 +40,10 @@ const TambahUser = () => {
     e.preventDefault();
 
     let isFailedValidation =
-      nama.length === 0 || password.length === 0 || tipeUser.length === 0;
+      nama.length === 0 ||
+      password.length === 0 ||
+      tipeUser.length === 0 ||
+      targetSuaraCaleg.length === 0;
     if (isFailedValidation) {
       setError(true);
       setOpen(!open);
@@ -50,6 +54,7 @@ const TambahUser = () => {
           nama,
           password,
           tipeUser,
+          targetSuaraCaleg,
           id: user._id,
           token: user.token
         });
@@ -117,6 +122,25 @@ const TambahUser = () => {
                 />
               )}
               onInputChange={(e, value) => setTipeUser(value)}
+            />
+            <Typography sx={[labelInput, spacingTop]}>
+              Target Suara Caleg
+            </Typography>
+            <TextField
+              type="number"
+              size="small"
+              error={error && targetSuaraCaleg.length === 0 && true}
+              helperText={
+                error &&
+                targetSuaraCaleg.length === 0 &&
+                "Target Suara Caleg harus diisi!"
+              }
+              id="outlined-basic"
+              variant="outlined"
+              value={targetSuaraCaleg}
+              onChange={(e) =>
+                setTargetSuaraCaleg(e.target.value.toUpperCase())
+              }
             />
           </Box>
         </Box>

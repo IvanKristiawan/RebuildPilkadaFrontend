@@ -1,5 +1,7 @@
-import React, { useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
+import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { tempUrl } from "../../contexts/ContextProvider";
 import { AuthContext } from "../../contexts/AuthContext";
 import {
   Box,
@@ -13,7 +15,27 @@ import EditIcon from "@mui/icons-material/Edit";
 
 const ProfilCaleg = () => {
   const { user, dispatch } = useContext(AuthContext);
+  const [nama, setNama] = useState("");
+  const [tipeUser, setTipeUser] = useState("");
+  const [targetSuaraCaleg, setTargetSuaraCaleg] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    getUserById();
+  }, []);
+
+  const getUserById = async () => {
+    setLoading(true);
+    const response = await axios.post(`${tempUrl}/findUser/${user._id}`, {
+      id: user._id,
+      token: user.token
+    });
+    setNama(response.data.nama);
+    setTipeUser(response.data.tipeUser);
+    setTargetSuaraCaleg(response.data.targetSuaraCaleg);
+    setLoading(false);
+  };
 
   return (
     <Box sx={container}>
@@ -46,7 +68,7 @@ const ProfilCaleg = () => {
             InputProps={{
               readOnly: true
             }}
-            value={user.nama}
+            value={nama}
           />
           <Typography sx={[labelInput, spacingTop]}>Tipe User</Typography>
           <TextField
@@ -56,7 +78,19 @@ const ProfilCaleg = () => {
             InputProps={{
               readOnly: true
             }}
-            value={user.tipeUser}
+            value={tipeUser}
+          />
+          <Typography sx={[labelInput, spacingTop]}>
+            Target Suara Caleg
+          </Typography>
+          <TextField
+            size="small"
+            id="outlined-basic"
+            variant="filled"
+            InputProps={{
+              readOnly: true
+            }}
+            value={targetSuaraCaleg.toLocaleString()}
           />
         </Box>
       </Box>

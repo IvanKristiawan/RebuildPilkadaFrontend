@@ -24,6 +24,7 @@ const UbahUser = () => {
   const [nama, setNama] = useState("");
   const [password, setPassword] = useState("");
   const [tipeUser, setTipeUser] = useState("");
+  const [targetSuaraCaleg, setTargetSuaraCaleg] = useState("");
   const [error, setError] = useState(false);
   const navigate = useNavigate();
   const { id } = useParams();
@@ -49,6 +50,7 @@ const UbahUser = () => {
     setNama(pickedUser.data.nama);
     setPassword(pickedUser.data.password);
     setTipeUser(pickedUser.data.tipeUser);
+    setTargetSuaraCaleg(pickedUser.data.targetSuaraCaleg);
     setLoading(false);
   };
 
@@ -56,7 +58,10 @@ const UbahUser = () => {
     e.preventDefault();
 
     let isFailedValidation =
-      nama.length === 0 || password.length === 0 || tipeUser.length === 0;
+      nama.length === 0 ||
+      password.length === 0 ||
+      tipeUser.length === 0 ||
+      targetSuaraCaleg.length === 0;
     if (isFailedValidation) {
       setError(true);
       setOpen(!open);
@@ -67,6 +72,7 @@ const UbahUser = () => {
           nama,
           password,
           tipeUser,
+          targetSuaraCaleg,
           id: user._id,
           token: user.token
         });
@@ -141,6 +147,25 @@ const UbahUser = () => {
               )}
               onInputChange={(e, value) => setTipeUser(value)}
               value={{ label: tipeUser }}
+            />
+            <Typography sx={[labelInput, spacingTop]}>
+              Target Suara Caleg
+            </Typography>
+            <TextField
+              type="number"
+              size="small"
+              error={error && targetSuaraCaleg.length === 0 && true}
+              helperText={
+                error &&
+                targetSuaraCaleg.length === 0 &&
+                "Target Suara Caleg harus diisi!"
+              }
+              id="outlined-basic"
+              variant="outlined"
+              value={targetSuaraCaleg}
+              onChange={(e) =>
+                setTargetSuaraCaleg(e.target.value.toUpperCase())
+              }
             />
           </Box>
         </Box>

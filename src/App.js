@@ -20,6 +20,7 @@ import { Colors } from "./constants/styles";
 import { AuthContext } from "./contexts/AuthContext";
 import { useStateContext } from "./contexts/ContextProvider";
 import MenuIcon from "@mui/icons-material/Menu";
+import InsightsIcon from "@mui/icons-material/Insights";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import PersonIcon from "@mui/icons-material/Person";
 import ReduceCapacityIcon from "@mui/icons-material/ReduceCapacity";
@@ -35,6 +36,7 @@ import {
   TambahUser,
   UbahUser,
   DashboardTps,
+  DashboardGlobal,
   ProfilCaleg,
   UbahProfilCaleg,
   DaftarTps,
@@ -171,6 +173,12 @@ const App = () => {
                 )}
                 {user.tipeUser === "CALEG" && (
                   <>
+                    <Link to="/dashboardGlobal" style={linkText}>
+                      <MenuItem icon={<InsightsIcon name="dashboardGlobal" />}>
+                        Dashboard Global
+                      </MenuItem>
+                    </Link>
+                    <Divider />
                     <Link to="/dashboardTps" style={linkText}>
                       <MenuItem icon={<BarChartIcon name="dashboardTps" />}>
                         Dashboard TPS
@@ -272,6 +280,15 @@ const App = () => {
                     element={
                       <CALEGRoute>
                         <DashboardTps />
+                      </CALEGRoute>
+                    }
+                  />
+                  {/* Dashboard Global */}
+                  <Route
+                    path="/dashboardGlobal"
+                    element={
+                      <CALEGRoute>
+                        <DashboardGlobal />
                       </CALEGRoute>
                     }
                   />
