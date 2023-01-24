@@ -107,10 +107,10 @@ const DaftarTps = () => {
   useEffect(() => {
     getTpsForDoc();
     getTpsData();
-    // setInterval(async () => {
-    //   getTpsForDoc();
-    //   getTpsData();
-    // }, 2000);
+    setInterval(async () => {
+      getTpsForDoc();
+      getTpsData();
+    }, 5000);
     id && getTpsById();
   }, [id]);
 
