@@ -11,9 +11,9 @@ const DashboardGlobal = () => {
 
   useEffect(() => {
     getTotalSuaraData();
-    setInterval(async () => {
-      getTotalSuaraData();
-    }, 5000);
+    // setInterval(async () => {
+    //   getTotalSuaraData();
+    // }, 5000);
   }, []);
 
   const getTotalSuaraData = async () => {
@@ -48,7 +48,7 @@ const DashboardGlobal = () => {
 
   return (
     <Box sx={container}>
-      <Typography color="#757575">Dashboard GlobalS</Typography>
+      <Typography color="#757575">Dashboard Global</Typography>
       <Typography variant="h4" sx={subTitleText}>
         Total Suara Global
       </Typography>

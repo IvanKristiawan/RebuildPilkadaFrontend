@@ -91,13 +91,24 @@ const TambahTps = () => {
 
   const getNextKodeTpsCaleg = async (value) => {
     const nextKodeTps = await axios.post(`${tempUrl}/tpsNextKode`, {
+      idKecamatan: value,
       idCaleg: user._id,
       id: user._id,
       token: user.token
     });
     setKecamatan(value);
     if (user.tipeUser === "ADMIN") {
-      setNoTps(`${value}`);
+      if (caleg) {
+        const nextKodeTpsCaleg = await axios.post(`${tempUrl}/tpsNextKode`, {
+          idKecamatan: value,
+          idCaleg: caleg,
+          id: user._id,
+          token: user.token
+        });
+        setNoTps(`${value}${nextKodeTpsCaleg.data}`);
+      } else {
+        setNoTps(`${value}`);
+      }
     } else {
       setNoTps(`${value}${nextKodeTps.data}`);
     }
@@ -110,6 +121,7 @@ const TambahTps = () => {
     });
     if (findCaleg.data) {
       const nextKodeTps = await axios.post(`${tempUrl}/tpsNextKode`, {
+        idKecamatan: kecamatan,
         idCaleg: findCaleg.data._id,
         id: user._id,
         token: user.token
