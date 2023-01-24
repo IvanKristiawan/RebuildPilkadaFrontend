@@ -14,6 +14,11 @@ import {
   Snackbar,
   Alert,
   Autocomplete,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
   Paper
 } from "@mui/material";
 import SaveIcon from "@mui/icons-material/Save";
@@ -24,10 +29,18 @@ const TambahUser = () => {
   const [nama, setNama] = useState("");
   const [password, setPassword] = useState("");
   const [tipeUser, setTipeUser] = useState("");
-  const [targetSuaraCaleg, setTargetSuaraCaleg] = useState("");
   const [error, setError] = useState(false);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [openAlert, setOpenAlert] = useState(false);
+
+  const handleClickOpenAlert = () => {
+    setOpenAlert(true);
+  };
+
+  const handleCloseAlert = () => {
+    setOpenAlert(false);
+  };
 
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -40,26 +53,31 @@ const TambahUser = () => {
     e.preventDefault();
 
     let isFailedValidation =
-      nama.length === 0 ||
-      password.length === 0 ||
-      tipeUser.length === 0 ||
-      targetSuaraCaleg.length === 0;
+      nama.length === 0 || password.length === 0 || tipeUser.length === 0;
     if (isFailedValidation) {
       setError(true);
       setOpen(!open);
     } else {
       try {
-        setLoading(true);
-        await axios.post(`${tempUrl}/auth/register`, {
+        let tempNamaUser = await axios.post(`${tempUrl}/findUserNama`, {
           nama,
-          password,
-          tipeUser,
-          targetSuaraCaleg,
           id: user._id,
           token: user.token
         });
-        setLoading(false);
-        navigate("/daftarUser");
+        if (tempNamaUser.data.length > 0) {
+          handleClickOpenAlert();
+        } else {
+          setLoading(true);
+          await axios.post(`${tempUrl}/auth/register`, {
+            nama,
+            password,
+            tipeUser,
+            id: user._id,
+            token: user.token
+          });
+          setLoading(false);
+          navigate("/daftarUser");
+        }
       } catch (error) {
         console.log(error);
       }
@@ -78,6 +96,22 @@ const TambahUser = () => {
       <Typography variant="h4" sx={subTitleText}>
         Tambah User
       </Typography>
+      <Dialog
+        open={openAlert}
+        onClose={handleCloseAlert}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{`Data Nama Sama`}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-slide-description">
+            {`Nama User ${nama} sudah ada, ganti Nama User!`}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseAlert}>Ok</Button>
+        </DialogActions>
+      </Dialog>
       <Divider sx={dividerStyle} />
       <Paper sx={contentContainer} elevation={12}>
         <Box sx={showDataContainer}>
@@ -122,25 +156,6 @@ const TambahUser = () => {
                 />
               )}
               onInputChange={(e, value) => setTipeUser(value)}
-            />
-            <Typography sx={[labelInput, spacingTop]}>
-              Target Suara Caleg
-            </Typography>
-            <TextField
-              type="number"
-              size="small"
-              error={error && targetSuaraCaleg.length === 0 && true}
-              helperText={
-                error &&
-                targetSuaraCaleg.length === 0 &&
-                "Target Suara Caleg harus diisi!"
-              }
-              id="outlined-basic"
-              variant="outlined"
-              value={targetSuaraCaleg}
-              onChange={(e) =>
-                setTargetSuaraCaleg(e.target.value.toUpperCase())
-              }
             />
           </Box>
         </Box>
@@ -224,14 +239,4 @@ const contentContainer = {
   pt: 1,
   mt: 2,
   backgroundColor: Colors.grey100
-};
-
-const secondWrapper = {
-  marginLeft: {
-    sm: 4
-  },
-  marginTop: {
-    sm: 0,
-    xs: 4
-  }
 };

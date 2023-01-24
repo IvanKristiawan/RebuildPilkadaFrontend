@@ -37,7 +37,6 @@ const DaftarUser = () => {
   const [isFetchError, setIsFetchError] = useState(false);
   const [nama, setNama] = useState("");
   const [tipeUser, setTipeUser] = useState("");
-  const [targetSuaraCaleg, setTargetSuaraCaleg] = useState("");
   const [password, setPassword] = useState("");
 
   const [searchTerm, setSearchTerm] = useState("");
@@ -48,7 +47,6 @@ const DaftarUser = () => {
   const columns = [
     { title: "Nama", field: "nama" },
     { title: "Tipe User", field: "tipeUser" },
-    { title: "Target Suara Caleg", field: "targetSuaraCaleg" },
     { title: "Password", field: "password" }
   ];
 
@@ -75,10 +73,6 @@ const DaftarUser = () => {
     } else if (
       val.nama.toUpperCase().includes(searchTerm.toUpperCase()) ||
       val.tipeUser.toUpperCase().includes(searchTerm.toUpperCase()) ||
-      val.targetSuaraCaleg
-        .toString()
-        .toUpperCase()
-        .includes(searchTerm.toUpperCase()) ||
       val.password.toUpperCase().includes(searchTerm.toUpperCase())
     ) {
       return val;
@@ -121,7 +115,6 @@ const DaftarUser = () => {
       });
       setNama(response.data.nama);
       setTipeUser(response.data.tipeUser);
-      setTargetSuaraCaleg(response.data.targetSuaraCaleg);
       setPassword(response.data.password);
     }
   };
@@ -281,18 +274,6 @@ const DaftarUser = () => {
                   readOnly: true
                 }}
                 value={tipeUser}
-              />
-              <Typography sx={[labelInput, spacingTop]}>
-                Target Suara Caleg
-              </Typography>
-              <TextField
-                size="small"
-                id="outlined-basic"
-                variant="filled"
-                InputProps={{
-                  readOnly: true
-                }}
-                value={targetSuaraCaleg}
               />
               <Typography sx={[labelInput, spacingTop]}>Password</Typography>
               <TextField

@@ -34,12 +34,9 @@ export function ShowTableUser({ currentPosts, searchTerm }) {
       <Table aria-label="simple table">
         <TableHead className={classes.root}>
           <TableRow>
-            <TableCell className={classes.tableRightBorder}>Username</TableCell>
+            <TableCell className={classes.tableRightBorder}>Nama</TableCell>
             <TableCell className={classes.tableRightBorder}>
               Tipe User
-            </TableCell>
-            <TableCell className={classes.tableRightBorder}>
-              Target Suara Caleg
             </TableCell>
             <TableCell className={classes.tableRightBorder}>Password</TableCell>
           </TableRow>
@@ -52,10 +49,6 @@ export function ShowTableUser({ currentPosts, searchTerm }) {
               } else if (
                 val.nama.toUpperCase().includes(searchTerm.toUpperCase()) ||
                 val.tipeUser.toUpperCase().includes(searchTerm.toUpperCase()) ||
-                val.targetSuaraCaleg
-                  .toString()
-                  .toUpperCase()
-                  .includes(searchTerm.toUpperCase()) ||
                 val.password.toUpperCase().includes(searchTerm.toUpperCase())
               ) {
                 return val;
@@ -77,7 +70,6 @@ export function ShowTableUser({ currentPosts, searchTerm }) {
                   {user.nama}
                 </TableCell>
                 <TableCell>{user.tipeUser}</TableCell>
-                <TableCell>{user.targetSuaraCaleg}</TableCell>
                 <TableCell>{user.password}</TableCell>
               </TableRow>
             ))}

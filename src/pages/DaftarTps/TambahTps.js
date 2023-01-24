@@ -14,6 +14,11 @@ import {
   Snackbar,
   Alert,
   Paper,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
   Autocomplete
 } from "@mui/material";
 import SaveIcon from "@mui/icons-material/Save";
@@ -35,6 +40,15 @@ const TambahTps = () => {
   const [kecamatans, setKecamatans] = useState([]);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [openAlert, setOpenAlert] = useState(false);
+
+  const handleClickOpenAlert = () => {
+    setOpenAlert(true);
+  };
+
+  const handleCloseAlert = () => {
+    setOpenAlert(false);
+  };
 
   const calegOptions = calegs.map((caleg) => ({
     label: `${caleg._id} - ${caleg.nama}`
@@ -155,32 +169,41 @@ const TambahTps = () => {
       setOpen(!open);
     } else {
       try {
-        setLoading(true);
-        if (user.tipeUser === "ADMIN") {
-          const findCaleg = await axios.post(`${tempUrl}/findUser/${caleg}`, {
-            id: user._id,
-            token: user.token
-          });
-          calegId = findCaleg.data._id;
-        }
-        await axios.post(`${tempUrl}/saveTps`, {
-          idCaleg: calegId,
-          idKecamatan: kecamatan,
-          noTps,
-          namaTps,
-          noHpSaksi,
+        let tempNamaSaksi = await axios.post(`${tempUrl}/findTpsNamaSaksi`, {
           namaSaksi,
-          totalPemilih,
-          targetSuara,
-          passwordSaksi,
-          tglInput: current_date,
-          jamInput: current_time,
-          userInput: user.nama,
           id: user._id,
           token: user.token
         });
-        setLoading(false);
-        navigate("/daftarTps");
+        if (tempNamaSaksi.data.length > 0) {
+          handleClickOpenAlert();
+        } else {
+          setLoading(true);
+          if (user.tipeUser === "ADMIN") {
+            const findCaleg = await axios.post(`${tempUrl}/findUser/${caleg}`, {
+              id: user._id,
+              token: user.token
+            });
+            calegId = findCaleg.data._id;
+          }
+          await axios.post(`${tempUrl}/saveTps`, {
+            idCaleg: calegId,
+            idKecamatan: kecamatan,
+            noTps,
+            namaTps,
+            noHpSaksi,
+            namaSaksi,
+            totalPemilih,
+            targetSuara,
+            passwordSaksi,
+            tglInput: current_date,
+            jamInput: current_time,
+            userInput: user.nama,
+            id: user._id,
+            token: user.token
+          });
+          setLoading(false);
+          navigate("/daftarTps");
+        }
       } catch (error) {
         console.log(error);
       }
@@ -197,6 +220,22 @@ const TambahTps = () => {
       <Typography variant="h4" sx={subTitleText}>
         Tambah TPS
       </Typography>
+      <Dialog
+        open={openAlert}
+        onClose={handleCloseAlert}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{`Data Nama Saksi Sama`}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-slide-description">
+            {`Nama Saksi ${namaSaksi} sudah ada, ganti Nama Saksi!`}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseAlert}>Ok</Button>
+        </DialogActions>
+      </Dialog>
       <Divider sx={dividerStyle} />
       <Paper sx={contentContainer} elevation={12}>
         <Box sx={showDataContainer}>

@@ -17,7 +17,6 @@ const ProfilCaleg = () => {
   const { user, dispatch } = useContext(AuthContext);
   const [nama, setNama] = useState("");
   const [tipeUser, setTipeUser] = useState("");
-  const [targetSuaraCaleg, setTargetSuaraCaleg] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -33,7 +32,6 @@ const ProfilCaleg = () => {
     });
     setNama(response.data.nama);
     setTipeUser(response.data.tipeUser);
-    setTargetSuaraCaleg(response.data.targetSuaraCaleg);
     setLoading(false);
   };
 
@@ -79,18 +77,6 @@ const ProfilCaleg = () => {
               readOnly: true
             }}
             value={tipeUser}
-          />
-          <Typography sx={[labelInput, spacingTop]}>
-            Target Suara Caleg
-          </Typography>
-          <TextField
-            size="small"
-            id="outlined-basic"
-            variant="filled"
-            InputProps={{
-              readOnly: true
-            }}
-            value={targetSuaraCaleg.toLocaleString()}
           />
         </Box>
       </Box>

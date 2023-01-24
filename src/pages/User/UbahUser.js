@@ -14,6 +14,11 @@ import {
   Snackbar,
   Alert,
   Autocomplete,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
   Paper
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
@@ -21,14 +26,23 @@ import EditIcon from "@mui/icons-material/Edit";
 const UbahUser = () => {
   const { user, dispatch } = useContext(AuthContext);
   const [open, setOpen] = useState(false);
+  const [namaAwal, setNamaAwal] = useState("");
   const [nama, setNama] = useState("");
   const [password, setPassword] = useState("");
   const [tipeUser, setTipeUser] = useState("");
-  const [targetSuaraCaleg, setTargetSuaraCaleg] = useState("");
   const [error, setError] = useState(false);
   const navigate = useNavigate();
   const { id } = useParams();
   const [loading, setLoading] = useState(false);
+  const [openAlert, setOpenAlert] = useState(false);
+
+  const handleClickOpenAlert = () => {
+    setOpenAlert(true);
+  };
+
+  const handleCloseAlert = () => {
+    setOpenAlert(false);
+  };
 
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -47,10 +61,10 @@ const UbahUser = () => {
       id: user._id,
       token: user.token
     });
+    setNamaAwal(pickedUser.data.nama);
     setNama(pickedUser.data.nama);
     setPassword(pickedUser.data.password);
     setTipeUser(pickedUser.data.tipeUser);
-    setTargetSuaraCaleg(pickedUser.data.targetSuaraCaleg);
     setLoading(false);
   };
 
@@ -58,31 +72,36 @@ const UbahUser = () => {
     e.preventDefault();
 
     let isFailedValidation =
-      nama.length === 0 ||
-      password.length === 0 ||
-      tipeUser.length === 0 ||
-      targetSuaraCaleg.length === 0;
+      nama.length === 0 || password.length === 0 || tipeUser.length === 0;
     if (isFailedValidation) {
       setError(true);
       setOpen(!open);
     } else {
       try {
-        setLoading(true);
-        await axios.post(`${tempUrl}/updateUser/${id}`, {
+        let tempNamaUser = await axios.post(`${tempUrl}/findUserNama`, {
           nama,
-          password,
-          tipeUser,
-          targetSuaraCaleg,
           id: user._id,
           token: user.token
         });
-        setLoading(false);
-
-        if (user._id === id) {
-          dispatch({ type: "LOGOUT" });
-          navigate("/");
+        if (tempNamaUser.data.length > 0 && namaAwal !== nama) {
+          handleClickOpenAlert();
         } else {
-          navigate(`/daftarUser/${id}`);
+          setLoading(true);
+          await axios.post(`${tempUrl}/updateUser/${id}`, {
+            nama,
+            password,
+            tipeUser,
+            id: user._id,
+            token: user.token
+          });
+          setLoading(false);
+
+          if (user._id === id) {
+            dispatch({ type: "LOGOUT" });
+            navigate("/");
+          } else {
+            navigate(`/daftarUser/${id}`);
+          }
         }
       } catch (error) {
         console.log(error);
@@ -102,6 +121,22 @@ const UbahUser = () => {
       <Typography variant="h4" sx={subTitleText}>
         Ubah User
       </Typography>
+      <Dialog
+        open={openAlert}
+        onClose={handleCloseAlert}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{`Data Nama Sama`}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-slide-description">
+            {`Nama User ${nama} sudah ada, ganti Nama User!`}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseAlert}>Ok</Button>
+        </DialogActions>
+      </Dialog>
       <Divider sx={dividerStyle} />
       <Paper sx={contentContainer} elevation={12}>
         <Box sx={showDataContainer}>
@@ -147,25 +182,6 @@ const UbahUser = () => {
               )}
               onInputChange={(e, value) => setTipeUser(value)}
               value={{ label: tipeUser }}
-            />
-            <Typography sx={[labelInput, spacingTop]}>
-              Target Suara Caleg
-            </Typography>
-            <TextField
-              type="number"
-              size="small"
-              error={error && targetSuaraCaleg.length === 0 && true}
-              helperText={
-                error &&
-                targetSuaraCaleg.length === 0 &&
-                "Target Suara Caleg harus diisi!"
-              }
-              id="outlined-basic"
-              variant="outlined"
-              value={targetSuaraCaleg}
-              onChange={(e) =>
-                setTargetSuaraCaleg(e.target.value.toUpperCase())
-              }
             />
           </Box>
         </Box>
@@ -249,14 +265,4 @@ const contentContainer = {
   pt: 1,
   mt: 2,
   backgroundColor: Colors.grey100
-};
-
-const secondWrapper = {
-  marginLeft: {
-    sm: 4
-  },
-  marginTop: {
-    sm: 0,
-    xs: 4
-  }
 };
