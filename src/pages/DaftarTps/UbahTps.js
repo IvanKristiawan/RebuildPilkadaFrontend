@@ -79,7 +79,7 @@ const UbahTps = () => {
     setPasswordSaksiAwal(pickedTps.data.passwordSaksi);
     setCaleg(pickedTps.data.idCaleg.nama);
     setKecamatan(
-      `${pickedTps.data.idKecamatan._id} - ${pickedTps.data.idKecamatan.namaKecamatan}`
+      `${pickedTps.data.idKecamatan.kodeKecamatan} - ${pickedTps.data.idKecamatan.namaKecamatan}`
     );
     setLoading(false);
   };

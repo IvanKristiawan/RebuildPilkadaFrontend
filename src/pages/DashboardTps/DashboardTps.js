@@ -12,6 +12,11 @@ import {
   Snackbar,
   Alert,
   Autocomplete,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
   Paper
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
@@ -27,6 +32,15 @@ const DashboardTps = () => {
   const [loading, setLoading] = useState(false);
   const [dataBarChart, setDataBarChart] = useState([]);
   const [totalDataBarChart, setTotalDataBarChart] = useState([]);
+  const [openAlert, setOpenAlert] = useState(false);
+
+  const handleClickOpenAlert = () => {
+    setOpenAlert(true);
+  };
+
+  const handleCloseAlert = () => {
+    setOpenAlert(false);
+  };
 
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -36,7 +50,7 @@ const DashboardTps = () => {
   };
 
   const kecamatanOptions = kecamatans.map((kecamatan) => ({
-    label: `${kecamatan._id} - ${kecamatan.namaKecamatan}`
+    label: `${kecamatan.kodeKecamatan} - ${kecamatan.namaKecamatan}`
   }));
 
   useEffect(() => {
@@ -57,39 +71,58 @@ const DashboardTps = () => {
     let totalPemilih = 0;
     let totalJumlahPemilih = 0;
     let totalTargetSuara = 0;
-    const kecamatans = await axios.post(`${tempUrl}/allTpsCalegByKecamatan`, {
-      idKecamatan: kecamatan,
-      id: user._id,
-      token: user.token
-    });
-    let tempDataBarChart = [
-      ["TPS", "Total Pemilih", "Target Suara", "Jumlah Pemilih"]
-    ];
-    let tempTotalDataBarChart = [
-      ["TotalTPS", "Total Pemilih", "Target Suara", "Jumlah Pemilih"]
-    ];
-    for (let i = 0; i < kecamatans.data.length; i++) {
-      let tempTpsKecamatan = [
-        `${kecamatans.data[i].namaTps}`,
-        kecamatans.data[i].totalPemilih,
-        kecamatans.data[i].targetSuara,
-        kecamatans.data[i].jumlahPemilih
-      ];
-      totalPemilih += kecamatans.data[i].totalPemilih;
-      totalTargetSuara += kecamatans.data[i].targetSuara;
-      totalJumlahPemilih += kecamatans.data[i].jumlahPemilih;
-      tempDataBarChart.push(tempTpsKecamatan);
+
+    let isFailedValidation = kecamatan.length === 0;
+    if (isFailedValidation) {
+      setError(true);
+      setOpen(!open);
+    } else {
+      let tempKecamatan = await axios.post(
+        `${tempUrl}/kecamatanCalegByKodeKecamatan`,
+        {
+          kodeKecamatan: kecamatan,
+          id: user._id,
+          token: user.token
+        }
+      );
+      const kecamatans = await axios.post(`${tempUrl}/allTpsCalegByKecamatan`, {
+        idKecamatan: tempKecamatan.data._id,
+        id: user._id,
+        token: user.token
+      });
+      if (kecamatans.data.length > 0) {
+        let tempDataBarChart = [
+          ["TPS", "Total Pemilih", "Target Suara", "Jumlah Pemilih"]
+        ];
+        let tempTotalDataBarChart = [
+          ["TotalTPS", "Total Pemilih", "Target Suara", "Jumlah Pemilih"]
+        ];
+        for (let i = 0; i < kecamatans.data.length; i++) {
+          let tempTpsKecamatan = [
+            `${kecamatans.data[i].namaTps}`,
+            kecamatans.data[i].totalPemilih,
+            kecamatans.data[i].targetSuara,
+            kecamatans.data[i].jumlahPemilih
+          ];
+          totalPemilih += kecamatans.data[i].totalPemilih;
+          totalTargetSuara += kecamatans.data[i].targetSuara;
+          totalJumlahPemilih += kecamatans.data[i].jumlahPemilih;
+          tempDataBarChart.push(tempTpsKecamatan);
+        }
+        let tempTotalTpsKecamatan = [
+          `Total Semua Tps`,
+          totalPemilih,
+          totalTargetSuara,
+          totalJumlahPemilih
+        ];
+        tempTotalDataBarChart.push(tempTotalTpsKecamatan);
+        setTotalDataBarChart(tempTotalDataBarChart);
+        setDataBarChart(tempDataBarChart);
+        setOpenChart(true);
+      } else {
+        handleClickOpenAlert();
+      }
     }
-    let tempTotalTpsKecamatan = [
-      `Total Semua Tps`,
-      totalPemilih,
-      totalTargetSuara,
-      totalJumlahPemilih
-    ];
-    tempTotalDataBarChart.push(tempTotalTpsKecamatan);
-    setTotalDataBarChart(tempTotalDataBarChart);
-    setDataBarChart(tempDataBarChart);
-    setOpenChart(true);
   };
 
   if (loading) {
@@ -102,6 +135,22 @@ const DashboardTps = () => {
       <Typography variant="h4" sx={subTitleText}>
         TPS Per Kecamatan
       </Typography>
+      <Dialog
+        open={openAlert}
+        onClose={handleCloseAlert}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{`Tidak Ada TPS`}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-slide-description">
+            {`Tidak ada Data TPS di Kecamatan ini!`}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseAlert}>Ok</Button>
+        </DialogActions>
+      </Dialog>
       <Divider sx={dividerStyle} />
       <Typography sx={[labelInput, spacingTop]}>Kode Kecamatan</Typography>
       <Autocomplete

@@ -42,9 +42,7 @@ const TambahKecamatan = () => {
 
   useEffect(() => {
     getCalegsData();
-    if (user.tipeUser === "CALEG") {
-      getNextKodeKecamatan();
-    }
+    getNextKodeKecamatan();
   }, []);
 
   const getCalegsData = async () => {
@@ -58,38 +56,16 @@ const TambahKecamatan = () => {
   };
 
   const getNextKodeKecamatan = async (value) => {
-    if (user.tipeUser === "ADMIN") {
-      const findCaleg = await axios.post(`${tempUrl}/findUser/${value}`, {
-        id: user._id,
-        token: user.token
-      });
-      if (findCaleg.data) {
-        const nextKodeKecamatan = await axios.post(
-          `${tempUrl}/kecamatanNextKode`,
-          {
-            idCaleg: findCaleg.data._id,
-            id: user._id,
-            token: user.token
-          }
-        );
-        setKodeKecamatan(nextKodeKecamatan.data);
-      }
-    } else {
-      const nextKodeKecamatan = await axios.post(
-        `${tempUrl}/kecamatanNextKode`,
-        {
-          idCaleg: user._id,
-          id: user._id,
-          token: user.token
-        }
-      );
-      setKodeKecamatan(nextKodeKecamatan.data);
-    }
+    const nextKodeKecamatan = await axios.post(`${tempUrl}/kecamatanNextKode`, {
+      idCaleg: user._id,
+      id: user._id,
+      token: user.token
+    });
+    setKodeKecamatan(nextKodeKecamatan.data);
     setCaleg(value);
   };
 
   const saveKecamatan = async (e) => {
-    let calegId = user._id;
     e.preventDefault();
     var date = new Date();
     var current_date =
@@ -105,16 +81,9 @@ const TambahKecamatan = () => {
     } else {
       try {
         setLoading(true);
-        if (user.tipeUser === "ADMIN") {
-          const findCaleg = await axios.post(`${tempUrl}/findUser/${caleg}`, {
-            id: user._id,
-            token: user.token
-          });
-          calegId = findCaleg.data._id;
-        }
         await axios.post(`${tempUrl}/saveKecamatan`, {
-          idCaleg: calegId,
-          _id: kodeKecamatan,
+          idCaleg: user._id,
+          kodeKecamatan,
           namaKecamatan,
           tglInput: current_date,
           jamInput: current_time,
@@ -161,36 +130,6 @@ const TambahKecamatan = () => {
               }}
               sx={{ backgroundColor: Colors.grey400 }}
             />
-            {user.tipeUser === "ADMIN" && (
-              <>
-                <Typography sx={[labelInput, spacingTop]}>
-                  Kode Caleg
-                </Typography>
-                <Autocomplete
-                  size="small"
-                  disablePortal
-                  id="combo-box-demo"
-                  options={calegOptions}
-                  renderInput={(params) => (
-                    <TextField
-                      size="small"
-                      error={error && caleg.length === 0 && true}
-                      helperText={
-                        error && caleg.length === 0 && "Caleg harus diisi!"
-                      }
-                      {...params}
-                    />
-                  )}
-                  onInputChange={(e, value) => {
-                    if (value) {
-                      getNextKodeKecamatan(value.split(" ", 1)[0]);
-                    } else {
-                      setKodeKecamatan("");
-                    }
-                  }}
-                />
-              </>
-            )}
             <Typography sx={[labelInput, spacingTop]}>
               Nama Kecamatan
             </Typography>

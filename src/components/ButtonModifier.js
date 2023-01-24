@@ -35,17 +35,19 @@ const ButtonModifier = ({
   return (
     <>
       <ButtonGroup variant="contained">
-        <Button
-          color="success"
-          sx={{ bgcolor: "success.light", textTransform: "none" }}
-          startIcon={<AddCircleOutlineIcon />}
-          size="small"
-          onClick={() => {
-            navigate(addLink);
-          }}
-        >
-          Tambah
-        </Button>
+        {addLink && (
+          <Button
+            color="success"
+            sx={{ bgcolor: "success.light", textTransform: "none" }}
+            startIcon={<AddCircleOutlineIcon />}
+            size="small"
+            onClick={() => {
+              navigate(addLink);
+            }}
+          >
+            Tambah
+          </Button>
+        )}
         {kode && (
           <>
             {editLink && (

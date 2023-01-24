@@ -43,7 +43,7 @@ const DaftarKecamatan = () => {
 
   const columns = [
     { title: "Caleg", field: "caleg" },
-    { title: "Kode Kecamatan", field: "_id" },
+    { title: "Kode Kecamatan", field: "kodeKecamatan" },
     { title: "Nama Kecamatan", field: "namaKecamatan" }
   ];
 
@@ -59,7 +59,7 @@ const DaftarKecamatan = () => {
       return val;
     } else if (
       val.idCaleg.nama.toUpperCase().includes(searchTerm.toUpperCase()) ||
-      val._id.toUpperCase().includes(searchTerm.toUpperCase()) ||
+      val.kodeKecamatan.toUpperCase().includes(searchTerm.toUpperCase()) ||
       val.namaKecamatan.toUpperCase().includes(searchTerm.toUpperCase())
     ) {
       return val;
@@ -134,7 +134,7 @@ const DaftarKecamatan = () => {
         token: user.token
       });
       setCaleg(pickedKecamatan.data.idCaleg.nama);
-      setKodeKecamatan(pickedKecamatan.data._id);
+      setKodeKecamatan(pickedKecamatan.data.kodeKecamatan);
       setNamaKecamatan(pickedKecamatan.data.namaKecamatan);
     }
   };
@@ -206,16 +206,29 @@ const DaftarKecamatan = () => {
           </Button>
         </ButtonGroup>
       </Box>
-      <Box sx={buttonModifierContainer}>
-        <ButtonModifier
-          id={id}
-          kode={kodeKecamatan}
-          addLink={`/daftarKecamatan/tambahKecamatan`}
-          editLink={`/daftarKecamatan/${id}/edit`}
-          deleteUser={deleteKecamatan}
-          nameUser={kodeKecamatan}
-        />
-      </Box>
+      {user.tipeUser === "ADMIN" ? (
+        <Box sx={buttonModifierContainer}>
+          <ButtonModifier
+            id={id}
+            kode={kodeKecamatan}
+            addLink={null}
+            editLink={null}
+            deleteUser={deleteKecamatan}
+            nameUser={kodeKecamatan}
+          />
+        </Box>
+      ) : (
+        <Box sx={buttonModifierContainer}>
+          <ButtonModifier
+            id={id}
+            kode={kodeKecamatan}
+            addLink={`/daftarKecamatan/tambahKecamatan`}
+            editLink={`/daftarKecamatan/${id}/edit`}
+            deleteUser={deleteKecamatan}
+            nameUser={kodeKecamatan}
+          />
+        </Box>
+      )}
       <Divider sx={dividerStyle} />
       {isKecamatanExist && (
         <>

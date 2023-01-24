@@ -70,7 +70,9 @@ const DaftarTps = () => {
       return val;
     } else if (
       val.idCaleg.nama.toUpperCase().includes(searchTerm.toUpperCase()) ||
-      val.idKecamatan._id.toUpperCase().includes(searchTerm.toUpperCase()) ||
+      val.idKecamatan.kodeKecamatan
+        .toUpperCase()
+        .includes(searchTerm.toUpperCase()) ||
       val.idKecamatan.namaKecamatan
         .toUpperCase()
         .includes(searchTerm.toUpperCase()) ||
@@ -162,7 +164,7 @@ const DaftarTps = () => {
       });
       setCaleg(pickedTps.data.idCaleg.nama);
       setKecamatan(
-        `${pickedTps.data.idKecamatan._id} - ${pickedTps.data.idKecamatan.namaKecamatan}`
+        `${pickedTps.data.idKecamatan.kodeKecamatan} - ${pickedTps.data.idKecamatan.namaKecamatan}`
       );
       setNoTps(pickedTps.data.noTps);
       setNamaTps(pickedTps.data.namaTps);
@@ -247,16 +249,30 @@ const DaftarTps = () => {
           </Button>
         </ButtonGroup>
       </Box>
-      <Box sx={buttonModifierContainer}>
-        <ButtonModifier
-          id={id}
-          kode={noTps}
-          addLink={`/daftarTps/tambahTps`}
-          editLink={`/daftarTps/${id}/edit`}
-          deleteUser={deleteTps}
-          nameUser={noTps}
-        />
-      </Box>
+      {user.tipeUser === "ADMIN" ? (
+        <Box sx={buttonModifierContainer}>
+          <ButtonModifier
+            id={id}
+            kode={noTps}
+            addLink={null}
+            editLink={null}
+            deleteUser={deleteTps}
+            nameUser={noTps}
+          />
+        </Box>
+      ) : (
+        <Box sx={buttonModifierContainer}>
+          <ButtonModifier
+            id={id}
+            kode={noTps}
+            addLink={`/daftarTps/tambahTps`}
+            editLink={`/daftarTps/${id}/edit`}
+            deleteUser={deleteTps}
+            nameUser={noTps}
+          />
+        </Box>
+      )}
+
       <Divider sx={dividerStyle} />
       {isTpsExist && (
         <>

@@ -22,6 +22,8 @@ const TampilTps = () => {
   const [noHpSaksi, setNoHpSaksi] = useState("");
   const [namaSaksi, setNamaSaksi] = useState("");
   const [jumlahPemilih, setJumlahPemilih] = useState("");
+  const [processTambahButton, setProcessTambahButton] = useState(false);
+  const [processKurangButton, setProcessKurangButton] = useState(false);
 
   useEffect(() => {
     getTpsById();
@@ -44,11 +46,16 @@ const TampilTps = () => {
 
   const tambahJumlahPemilih = async () => {
     try {
-      await axios.post(`${tempUrl}/tambahJumlahPemilih/${id}`, {
-        id: user._id,
-        token: user.token
-      });
-      setJumlahPemilih(jumlahPemilih + 1);
+      setProcessTambahButton(true);
+      await axios
+        .post(`${tempUrl}/tambahJumlahPemilih/${id}`, {
+          id: user._id,
+          token: user.token
+        })
+        .then(() => {
+          setJumlahPemilih(jumlahPemilih + 1);
+          setProcessTambahButton(false);
+        });
     } catch (err) {
       alert(err);
     }
@@ -56,11 +63,16 @@ const TampilTps = () => {
 
   const kurangJumlahPemilih = async () => {
     try {
-      await axios.post(`${tempUrl}/kurangJumlahPemilih/${id}`, {
-        id: user._id,
-        token: user.token
-      });
-      setJumlahPemilih(jumlahPemilih - 1);
+      setProcessKurangButton(true);
+      await axios
+        .post(`${tempUrl}/kurangJumlahPemilih/${id}`, {
+          id: user._id,
+          token: user.token
+        })
+        .then(() => {
+          setJumlahPemilih(jumlahPemilih - 1);
+          setProcessKurangButton(false);
+        });
     } catch (err) {
       alert(err);
     }
@@ -145,10 +157,17 @@ const TampilTps = () => {
           variant="contained"
           aria-label="outlined primary button group"
         >
-          <Button onClick={() => tambahJumlahPemilih()}>
+          <Button
+            disabled={processTambahButton}
+            onClick={() => tambahJumlahPemilih()}
+          >
             + Tambah Pemilih
           </Button>
-          <Button color="secondary" onClick={() => kurangJumlahPemilih()}>
+          <Button
+            disabled={processKurangButton}
+            color="secondary"
+            onClick={() => kurangJumlahPemilih()}
+          >
             - Kurangkan Pemilih
           </Button>
         </ButtonGroup>

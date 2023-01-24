@@ -113,7 +113,7 @@ export function ShowTableDaftarTps({ currentPosts, searchTerm, tipeUser }) {
                 val.idCaleg.nama
                   .toUpperCase()
                   .includes(searchTerm.toUpperCase()) ||
-                val.idKecamatan._id
+                val.idKecamatan.kodeKecamatan
                   .toUpperCase()
                   .includes(searchTerm.toUpperCase()) ||
                 val.idKecamatan.namaKecamatan
@@ -160,7 +160,7 @@ export function ShowTableDaftarTps({ currentPosts, searchTerm, tipeUser }) {
                     {user.idCaleg.nama}
                   </TableCell>
                 )}
-                <TableCell>{`${user.idKecamatan._id} - ${user.idKecamatan.namaKecamatan}`}</TableCell>
+                <TableCell>{`${user.idKecamatan.kodeKecamatan} - ${user.idKecamatan.namaKecamatan}`}</TableCell>
                 <TableCell>{user.noTps}</TableCell>
                 <TableCell>{user.namaTps}</TableCell>
                 <TableCell>{user.totalPemilih.toLocaleString()}</TableCell>
@@ -196,7 +196,9 @@ export function ShowTableDaftarKecamatan({ currentPosts, searchTerm }) {
                 val.idCaleg.nama
                   .toUpperCase()
                   .includes(searchTerm.toUpperCase()) ||
-                val._id.toUpperCase().includes(searchTerm.toUpperCase()) ||
+                val.kodeKecamatan
+                  .toUpperCase()
+                  .includes(searchTerm.toUpperCase()) ||
                 val.namaKecamatan
                   .toUpperCase()
                   .includes(searchTerm.toUpperCase())
@@ -219,7 +221,7 @@ export function ShowTableDaftarKecamatan({ currentPosts, searchTerm }) {
                 <TableCell component="th" scope="row">
                   {user.idCaleg.nama}
                 </TableCell>
-                <TableCell>{user._id}</TableCell>
+                <TableCell>{user.kodeKecamatan}</TableCell>
                 <TableCell>{user.namaKecamatan}</TableCell>
               </TableRow>
             ))}

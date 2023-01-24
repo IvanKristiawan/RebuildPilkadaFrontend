@@ -26,7 +26,6 @@ import SaveIcon from "@mui/icons-material/Save";
 const TambahTps = () => {
   const { user } = useContext(AuthContext);
   const [open, setOpen] = useState(false);
-  const [caleg, setCaleg] = useState("");
   const [kecamatan, setKecamatan] = useState("");
   const [noTps, setNoTps] = useState("");
   const [namaTps, setNamaTps] = useState("");
@@ -36,7 +35,6 @@ const TambahTps = () => {
   const [totalPemilih, setTotalPemilih] = useState("");
   const [passwordSaksi, setPasswordSaksi] = useState("");
   const [error, setError] = useState(false);
-  const [calegs, setCalegs] = useState([]);
   const [kecamatans, setKecamatans] = useState([]);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -50,12 +48,8 @@ const TambahTps = () => {
     setOpenAlert(false);
   };
 
-  const calegOptions = calegs.map((caleg) => ({
-    label: `${caleg._id} - ${caleg.nama}`
-  }));
-
   const kecamatanOptions = kecamatans.map((kecamatan) => ({
-    label: `${kecamatan._id} - ${kecamatan.namaKecamatan}`
+    label: `${kecamatan.kodeKecamatan} - ${kecamatan.namaKecamatan}`
   }));
 
   const handleClose = (event, reason) => {
@@ -66,33 +60,8 @@ const TambahTps = () => {
   };
 
   useEffect(() => {
-    getCalegsData();
-    if (user.tipeUser === "ADMIN") {
-      getKecamatansData();
-    } else {
-      getKecamatansCalegData();
-    }
+    getKecamatansCalegData();
   }, []);
-
-  const getCalegsData = async () => {
-    setLoading(true);
-    const allCalegs = await axios.post(`${tempUrl}/usersCaleg`, {
-      id: user._id,
-      token: user.token
-    });
-    setCalegs(allCalegs.data);
-    setLoading(false);
-  };
-
-  const getKecamatansData = async () => {
-    setLoading(true);
-    const kecamatans = await axios.post(`${tempUrl}/kecamatans`, {
-      id: user._id,
-      token: user.token
-    });
-    setKecamatans(kecamatans.data);
-    setLoading(false);
-  };
 
   const getKecamatansCalegData = async () => {
     setLoading(true);
@@ -105,49 +74,25 @@ const TambahTps = () => {
   };
 
   const getNextKodeTpsCaleg = async (value) => {
+    let tempKecamatan = await axios.post(
+      `${tempUrl}/kecamatanCalegByKodeKecamatan`,
+      {
+        kodeKecamatan: value,
+        id: user._id,
+        token: user.token
+      }
+    );
     const nextKodeTps = await axios.post(`${tempUrl}/tpsNextKode`, {
-      idKecamatan: value,
+      idKecamatan: tempKecamatan.data._id,
       idCaleg: user._id,
       id: user._id,
       token: user.token
     });
     setKecamatan(value);
-    if (user.tipeUser === "ADMIN") {
-      if (caleg) {
-        const nextKodeTpsCaleg = await axios.post(`${tempUrl}/tpsNextKode`, {
-          idKecamatan: value,
-          idCaleg: caleg,
-          id: user._id,
-          token: user.token
-        });
-        setNoTps(`${value}${nextKodeTpsCaleg.data}`);
-      } else {
-        setNoTps(`${value}`);
-      }
-    } else {
-      setNoTps(`${value}${nextKodeTps.data}`);
-    }
-  };
-
-  const getNextKodeTpsAdmin = async (value) => {
-    const findCaleg = await axios.post(`${tempUrl}/findUser/${value}`, {
-      id: user._id,
-      token: user.token
-    });
-    if (findCaleg.data) {
-      const nextKodeTps = await axios.post(`${tempUrl}/tpsNextKode`, {
-        idKecamatan: kecamatan,
-        idCaleg: findCaleg.data._id,
-        id: user._id,
-        token: user.token
-      });
-      setNoTps(`${kecamatan}${nextKodeTps.data}`);
-    }
-    setCaleg(value);
+    setNoTps(`${value}${nextKodeTps.data}`);
   };
 
   const saveTps = async (e) => {
-    let calegId = user._id;
     e.preventDefault();
     var date = new Date();
     var current_date =
@@ -169,6 +114,14 @@ const TambahTps = () => {
       setOpen(!open);
     } else {
       try {
+        let tempKecamatan = await axios.post(
+          `${tempUrl}/kecamatanCalegByKodeKecamatan`,
+          {
+            kodeKecamatan: kecamatan,
+            id: user._id,
+            token: user.token
+          }
+        );
         let tempNamaSaksi = await axios.post(`${tempUrl}/findTpsNamaSaksi`, {
           namaSaksi,
           id: user._id,
@@ -178,16 +131,9 @@ const TambahTps = () => {
           handleClickOpenAlert();
         } else {
           setLoading(true);
-          if (user.tipeUser === "ADMIN") {
-            const findCaleg = await axios.post(`${tempUrl}/findUser/${caleg}`, {
-              id: user._id,
-              token: user.token
-            });
-            calegId = findCaleg.data._id;
-          }
           await axios.post(`${tempUrl}/saveTps`, {
-            idCaleg: calegId,
-            idKecamatan: kecamatan,
+            idCaleg: user._id,
+            idKecamatan: tempKecamatan.data._id,
             noTps,
             namaTps,
             noHpSaksi,
@@ -281,36 +227,6 @@ const TambahTps = () => {
                 }
               }}
             />
-            {user.tipeUser === "ADMIN" && (
-              <>
-                <Typography sx={[labelInput, spacingTop]}>
-                  Kode Caleg
-                </Typography>
-                <Autocomplete
-                  size="small"
-                  disablePortal
-                  id="combo-box-demo"
-                  options={calegOptions}
-                  renderInput={(params) => (
-                    <TextField
-                      size="small"
-                      error={error && caleg.length === 0 && true}
-                      helperText={
-                        error && caleg.length === 0 && "Caleg harus diisi!"
-                      }
-                      {...params}
-                    />
-                  )}
-                  onInputChange={(e, value) => {
-                    if (value) {
-                      getNextKodeTpsAdmin(value.split(" ", 1)[0]);
-                    } else {
-                      setNoTps("");
-                    }
-                  }}
-                />
-              </>
-            )}
             <Typography sx={[labelInput, spacingTop]}>Nama TPS</Typography>
             <TextField
               size="small"
