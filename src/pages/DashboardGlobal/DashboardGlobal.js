@@ -24,23 +24,19 @@ const DashboardGlobal = () => {
         token: user.token
       }
     );
-    const findUser = await axios.post(`${tempUrl}/findUser/${user._id}`, {
-      id: user._id,
-      token: user.token
-    });
     let tempDataBarChart = [
       [
         "Total Suara Global",
-        "Total Jumlah Pemilih",
+        "Total Pemilih",
         "Total Target Suara TPS",
-        "Total Target Suara Caleg"
+        "Jumlah Pemilih"
       ]
     ];
     let tempTotalSuara = [
-      `${findUser.data.nama}`,
-      totalSuara.data[0].totalJumlahPemilih,
+      `Statistik ${user.nama}`,
+      totalSuara.data[0].totalPemilih,
       totalSuara.data[0].totalTargetSuara,
-      findUser.data.targetSuaraCaleg
+      totalSuara.data[0].totalJumlahPemilih
     ];
     tempDataBarChart.push(tempTotalSuara);
     setDataBarChart(tempDataBarChart);

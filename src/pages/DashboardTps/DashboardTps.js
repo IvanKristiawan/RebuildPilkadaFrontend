@@ -54,6 +54,7 @@ const DashboardTps = () => {
   };
 
   const cariTpsByKecamatan = async () => {
+    let totalPemilih = 0;
     let totalJumlahPemilih = 0;
     let totalTargetSuara = 0;
     const kecamatans = await axios.post(`${tempUrl}/allTpsCalegByKecamatan`, {
@@ -61,24 +62,29 @@ const DashboardTps = () => {
       id: user._id,
       token: user.token
     });
-    let tempDataBarChart = [["TPS", "Jumlah Pemilih", "Target Suara"]];
+    let tempDataBarChart = [
+      ["TPS", "Total Pemilih", "Target Suara", "Jumlah Pemilih"]
+    ];
     let tempTotalDataBarChart = [
-      ["TotalTPS", "Jumlah Pemilih", "Target Suara"]
+      ["TotalTPS", "Total Pemilih", "Target Suara", "Jumlah Pemilih"]
     ];
     for (let i = 0; i < kecamatans.data.length; i++) {
       let tempTpsKecamatan = [
         `${kecamatans.data[i].namaTps}`,
-        kecamatans.data[i].jumlahPemilih,
-        kecamatans.data[i].targetSuara
+        kecamatans.data[i].totalPemilih,
+        kecamatans.data[i].targetSuara,
+        kecamatans.data[i].jumlahPemilih
       ];
-      totalJumlahPemilih += kecamatans.data[i].jumlahPemilih;
+      totalPemilih += kecamatans.data[i].totalPemilih;
       totalTargetSuara += kecamatans.data[i].targetSuara;
+      totalJumlahPemilih += kecamatans.data[i].jumlahPemilih;
       tempDataBarChart.push(tempTpsKecamatan);
     }
     let tempTotalTpsKecamatan = [
       `Total Semua Tps`,
-      totalJumlahPemilih,
-      totalTargetSuara
+      totalPemilih,
+      totalTargetSuara,
+      totalJumlahPemilih
     ];
     tempTotalDataBarChart.push(tempTotalTpsKecamatan);
     setTotalDataBarChart(tempTotalDataBarChart);
