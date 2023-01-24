@@ -38,8 +38,9 @@ const DaftarTps = () => {
   const [namaTps, setNamaTps] = useState("");
   const [noHpSaksi, setNoHpSaksi] = useState("");
   const [namaSaksi, setNamaSaksi] = useState("");
-  const [jumlahPemilih, setJumlahPemilih] = useState("");
+  const [totalPemilih, setTotalPemilih] = useState("");
   const [targetSuara, setTargetSuara] = useState("");
+  const [jumlahPemilih, setJumlahPemilih] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [tpsData, setTpsData] = useState([]);
   const [tpsForDoc, setTpsForDoc] = useState([]);
@@ -77,11 +78,15 @@ const DaftarTps = () => {
       val.namaTps.toUpperCase().includes(searchTerm.toUpperCase()) ||
       val.noHpSaksi.toUpperCase().includes(searchTerm.toUpperCase()) ||
       val.namaSaksi.toUpperCase().includes(searchTerm.toUpperCase()) ||
-      val.jumlahPemilih
+      val.totalPemilih
         .toString()
         .toUpperCase()
         .includes(searchTerm.toUpperCase()) ||
       val.targetSuara
+        .toString()
+        .toUpperCase()
+        .includes(searchTerm.toUpperCase()) ||
+      val.jumlahPemilih
         .toString()
         .toUpperCase()
         .includes(searchTerm.toUpperCase())
@@ -165,6 +170,7 @@ const DaftarTps = () => {
       setNamaSaksi(pickedTps.data.namaSaksi);
       setJumlahPemilih(pickedTps.data.jumlahPemilih.toLocaleString());
       setTargetSuara(pickedTps.data.targetSuara.toLocaleString());
+      setTotalPemilih(pickedTps.data.totalPemilih.toLocaleString());
     }
   };
 
@@ -182,6 +188,7 @@ const DaftarTps = () => {
       setNamaSaksi("");
       setJumlahPemilih("");
       setTargetSuara("");
+      setTotalPemilih("");
       setLoading(false);
       navigate("/daftarTps");
     } catch (error) {
@@ -295,9 +302,7 @@ const DaftarTps = () => {
                 }}
                 value={namaTps}
               />
-            </Box>
-            <Box sx={[showDataWrapper, secondWrapper]}>
-              <Typography sx={labelInput}>Nama Saksi</Typography>
+              <Typography sx={[labelInput, spacingTop]}>Nama Saksi</Typography>
               <TextField
                 size="small"
                 id="outlined-basic"
@@ -319,9 +324,9 @@ const DaftarTps = () => {
                 }}
                 value={noHpSaksi}
               />
-              <Typography sx={[labelInput, spacingTop]}>
-                Jumlah Pemilih
-              </Typography>
+            </Box>
+            <Box sx={[showDataWrapper, secondWrapper]}>
+              <Typography sx={labelInput}>Total Pemilih</Typography>
               <TextField
                 size="small"
                 id="outlined-basic"
@@ -329,7 +334,7 @@ const DaftarTps = () => {
                 InputProps={{
                   readOnly: true
                 }}
-                value={jumlahPemilih}
+                value={totalPemilih}
               />
               <Typography sx={[labelInput, spacingTop]}>
                 Target Suara
@@ -342,6 +347,18 @@ const DaftarTps = () => {
                   readOnly: true
                 }}
                 value={targetSuara}
+              />
+              <Typography sx={[labelInput, spacingTop]}>
+                Jumlah Pemilih
+              </Typography>
+              <TextField
+                size="small"
+                id="outlined-basic"
+                variant="filled"
+                InputProps={{
+                  readOnly: true
+                }}
+                value={jumlahPemilih}
               />
             </Box>
           </Box>

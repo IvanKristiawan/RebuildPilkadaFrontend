@@ -28,6 +28,7 @@ const TambahTps = () => {
   const [noHpSaksi, setNoHpSaksi] = useState("");
   const [namaSaksi, setNamaSaksi] = useState("");
   const [targetSuara, setTargetSuara] = useState("");
+  const [totalPemilih, setTotalPemilih] = useState("");
   const [passwordSaksi, setPasswordSaksi] = useState("");
   const [error, setError] = useState(false);
   const [calegs, setCalegs] = useState([]);
@@ -146,6 +147,7 @@ const TambahTps = () => {
       namaTps.length === 0 ||
       noHpSaksi.length === 0 ||
       namaSaksi.length === 0 ||
+      totalPemilih.length === 0 ||
       targetSuara.length === 0 ||
       passwordSaksi.length === 0;
     if (isFailedValidation) {
@@ -168,6 +170,7 @@ const TambahTps = () => {
           namaTps,
           noHpSaksi,
           namaSaksi,
+          totalPemilih,
           targetSuara,
           passwordSaksi,
           tglInput: current_date,
@@ -281,9 +284,7 @@ const TambahTps = () => {
               value={namaTps}
               onChange={(e) => setNamaTps(e.target.value.toUpperCase())}
             />
-          </Box>
-          <Box sx={[showDataWrapper, secondWrapper]}>
-            <Typography sx={labelInput}>Nama Saksi</Typography>
+            <Typography sx={[labelInput, spacingTop]}>Nama Saksi</Typography>
             <TextField
               size="small"
               error={error && namaSaksi.length === 0 && true}
@@ -307,6 +308,28 @@ const TambahTps = () => {
               variant="outlined"
               value={noHpSaksi}
               onChange={(e) => setNoHpSaksi(e.target.value.toUpperCase())}
+            />
+          </Box>
+          <Box sx={[showDataWrapper, secondWrapper]}>
+            <Typography sx={labelInput}>
+              Total Pemilih
+              {totalPemilih !== 0 &&
+                !isNaN(parseInt(totalPemilih)) &&
+                ` : ${parseInt(totalPemilih).toLocaleString()}`}
+            </Typography>
+            <TextField
+              type="number"
+              error={error && totalPemilih.length === 0 && true}
+              helperText={
+                error &&
+                totalPemilih.length === 0 &&
+                "Total Pemilih Suara harus diisi!"
+              }
+              size="small"
+              id="outlined-basic"
+              variant="outlined"
+              value={totalPemilih}
+              onChange={(e) => setTotalPemilih(e.target.value.toUpperCase())}
             />
             <Typography sx={[labelInput, spacingTop]}>
               Target Suara

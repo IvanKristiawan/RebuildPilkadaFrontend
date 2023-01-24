@@ -28,6 +28,7 @@ const UbahTps = () => {
   const [namaSaksi, setNamaSaksi] = useState("");
   const [jumlahPemilih, setJumlahPemilih] = useState("");
   const [targetSuara, setTargetSuara] = useState("");
+  const [totalPemilih, setTotalPemilih] = useState("");
   const [passwordSaksi, setPasswordSaksi] = useState("");
   const [passwordSaksiAwal, setPasswordSaksiAwal] = useState("");
   const [error, setError] = useState(false);
@@ -58,6 +59,7 @@ const UbahTps = () => {
     setNamaSaksi(pickedTps.data.namaSaksi);
     setJumlahPemilih(pickedTps.data.jumlahPemilih);
     setTargetSuara(pickedTps.data.targetSuara);
+    setTotalPemilih(pickedTps.data.totalPemilih);
     setPasswordSaksiAwal(pickedTps.data.passwordSaksi);
     setCaleg(pickedTps.data.idCaleg.nama);
     setKecamatan(
@@ -78,6 +80,7 @@ const UbahTps = () => {
       namaTps.length === 0 ||
       noHpSaksi.length === 0 ||
       namaSaksi.length === 0 ||
+      totalPemilih.length === 0 ||
       targetSuara.length === 0;
     if (isFailedValidation) {
       setError(true);
@@ -89,6 +92,7 @@ const UbahTps = () => {
           namaTps,
           noHpSaksi,
           namaSaksi,
+          totalPemilih,
           targetSuara,
           passwordSaksi: !passwordSaksi ? passwordSaksiAwal : passwordSaksi,
           tglUpdate: current_date,
@@ -164,9 +168,7 @@ const UbahTps = () => {
               value={namaTps}
               onChange={(e) => setNamaTps(e.target.value.toUpperCase())}
             />
-          </Box>
-          <Box sx={[showDataWrapper, secondWrapper]}>
-            <Typography sx={labelInput}>Nama Saksi</Typography>
+            <Typography sx={[labelInput, spacingTop]}>Nama Saksi</Typography>
             <TextField
               size="small"
               error={error && namaSaksi.length === 0 && true}
@@ -191,9 +193,9 @@ const UbahTps = () => {
               value={noHpSaksi}
               onChange={(e) => setNoHpSaksi(e.target.value.toUpperCase())}
             />
-            <Typography sx={[labelInput, spacingTop]}>
-              Jumlah Pemilih
-            </Typography>
+          </Box>
+          <Box sx={[showDataWrapper, secondWrapper]}>
+            <Typography sx={labelInput}>Jumlah Pemilih</Typography>
             <TextField
               tpye="number"
               size="small"
@@ -204,6 +206,26 @@ const UbahTps = () => {
                 readOnly: true
               }}
               sx={{ backgroundColor: Colors.grey400 }}
+            />
+            <Typography sx={[labelInput, spacingTop]}>
+              Total Pemilih
+              {totalPemilih !== 0 &&
+                !isNaN(parseInt(totalPemilih)) &&
+                ` : ${parseInt(totalPemilih).toLocaleString()}`}
+            </Typography>
+            <TextField
+              tpye="number"
+              error={error && totalPemilih.length === 0 && true}
+              helperText={
+                error &&
+                totalPemilih.length === 0 &&
+                "Total Pemilih harus diisi!"
+              }
+              size="small"
+              id="outlined-basic"
+              variant="outlined"
+              value={totalPemilih}
+              onChange={(e) => setTotalPemilih(e.target.value.toUpperCase())}
             />
             <Typography sx={[labelInput, spacingTop]}>
               Target Suara

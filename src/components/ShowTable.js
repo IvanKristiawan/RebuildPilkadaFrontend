@@ -104,9 +104,12 @@ export function ShowTableDaftarTps({ currentPosts, searchTerm, tipeUser }) {
             <TableCell className={classes.tableRightBorder}>No. TPS</TableCell>
             <TableCell className={classes.tableRightBorder}>Nama TPS</TableCell>
             <TableCell className={classes.tableRightBorder}>
-              Jumlah Pemilih
+              Total Pemilih
             </TableCell>
-            <TableCell>Target Suara</TableCell>
+            <TableCell className={classes.tableRightBorder}>
+              Target Suara
+            </TableCell>
+            <TableCell>Jumlah Pemilih</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -126,14 +129,21 @@ export function ShowTableDaftarTps({ currentPosts, searchTerm, tipeUser }) {
                   .includes(searchTerm.toUpperCase()) ||
                 val.noTps.toUpperCase().includes(searchTerm.toUpperCase()) ||
                 val.namaTps.toUpperCase().includes(searchTerm.toUpperCase()) ||
+                val.noHpSaksi
+                  .toUpperCase()
+                  .includes(searchTerm.toUpperCase()) ||
                 val.namaSaksi
                   .toUpperCase()
                   .includes(searchTerm.toUpperCase()) ||
-                val.jumlahPemilih
+                val.totalPemilih
                   .toString()
                   .toUpperCase()
                   .includes(searchTerm.toUpperCase()) ||
                 val.targetSuara
+                  .toString()
+                  .toUpperCase()
+                  .includes(searchTerm.toUpperCase()) ||
+                val.jumlahPemilih
                   .toString()
                   .toUpperCase()
                   .includes(searchTerm.toUpperCase())
@@ -161,8 +171,9 @@ export function ShowTableDaftarTps({ currentPosts, searchTerm, tipeUser }) {
                 <TableCell>{`${user.idKecamatan._id} - ${user.idKecamatan.namaKecamatan}`}</TableCell>
                 <TableCell>{user.noTps}</TableCell>
                 <TableCell>{user.namaTps}</TableCell>
-                <TableCell>{user.jumlahPemilih.toLocaleString()}</TableCell>
+                <TableCell>{user.totalPemilih.toLocaleString()}</TableCell>
                 <TableCell>{user.targetSuara.toLocaleString()}</TableCell>
+                <TableCell>{user.jumlahPemilih.toLocaleString()}</TableCell>
               </TableRow>
             ))}
         </TableBody>
