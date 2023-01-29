@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { AuthContext } from "../../contexts/AuthContext";
 import { tempUrl } from "../../contexts/ContextProvider";
@@ -17,13 +17,16 @@ import {
 } from "@mui/material";
 import SaveIcon from "@mui/icons-material/Save";
 
-const TambahKecamatan = () => {
+const UbahKelurahan = () => {
   const { user } = useContext(AuthContext);
   const [open, setOpen] = useState(false);
-  const [kodeKecamatan, setKodeKecamatan] = useState("");
-  const [namaKecamatan, setNamaKecamatan] = useState("");
+  const [caleg, setCaleg] = useState("");
+  // const [kecamatan, setKecamatan] = useState("");
+  const [kodeKelurahan, setKodeKelurahan] = useState("");
+  const [namaKelurahan, setNamaKelurahan] = useState("");
   const [error, setError] = useState(false);
   const navigate = useNavigate();
+  const { id } = useParams();
   const [loading, setLoading] = useState(false);
 
   const handleClose = (event, reason) => {
@@ -34,19 +37,22 @@ const TambahKecamatan = () => {
   };
 
   useEffect(() => {
-    getNextKodeKecamatan();
+    getKelurahanById();
   }, []);
 
-  const getNextKodeKecamatan = async (value) => {
-    const nextKodeKecamatan = await axios.post(`${tempUrl}/kecamatanNextKode`, {
-      idCaleg: user._id,
+  const getKelurahanById = async () => {
+    setLoading(true);
+    const pickedKelurahan = await axios.post(`${tempUrl}/kelurahan/${id}`, {
       id: user._id,
       token: user.token
     });
-    setKodeKecamatan(nextKodeKecamatan.data);
+    setKodeKelurahan(pickedKelurahan.data.kodeKelurahan);
+    setNamaKelurahan(pickedKelurahan.data.namaKelurahan);
+    setCaleg(pickedKelurahan.data.idCaleg.nama);
+    setLoading(false);
   };
 
-  const saveKecamatan = async (e) => {
+  const updateKelurahan = async (e) => {
     e.preventDefault();
     var date = new Date();
     var current_date =
@@ -54,26 +60,23 @@ const TambahKecamatan = () => {
     var current_time =
       date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
 
-    let isFailedValidation =
-      kodeKecamatan.length === 0 || namaKecamatan.length === 0;
+    let isFailedValidation = namaKelurahan.length === 0;
     if (isFailedValidation) {
       setError(true);
       setOpen(!open);
     } else {
       try {
         setLoading(true);
-        await axios.post(`${tempUrl}/saveKecamatan`, {
-          idCaleg: user._id,
-          kodeKecamatan,
-          namaKecamatan,
-          tglInput: current_date,
-          jamInput: current_time,
-          userInput: user.nama,
+        await axios.post(`${tempUrl}/updateKelurahan/${id}`, {
+          namaKelurahan,
+          tglUpdate: current_date,
+          jamUpdate: current_time,
+          userUpdate: user.nama,
           id: user._id,
           token: user.token
         });
         setLoading(false);
-        navigate("/daftarKecamatan");
+        navigate("/daftarKelurahan");
       } catch (error) {
         console.log(error);
       }
@@ -86,46 +89,59 @@ const TambahKecamatan = () => {
 
   return (
     <Box sx={container}>
-      <Typography color="#757575">Daftar Kecamatan</Typography>
+      <Typography color="#757575">Daftar Kelurahan</Typography>
       <Typography variant="h4" sx={subTitleText}>
-        Tambah Kecamatan
+        Tambah Kelurahan
       </Typography>
       <Divider sx={dividerStyle} />
       <Paper sx={contentContainer} elevation={12}>
         <Box sx={showDataContainer}>
           <Box sx={showDataWrapper}>
-            <Typography sx={labelInput}>No. Kecamatan</Typography>
+            <Typography sx={labelInput}>Caleg</Typography>
             <TextField
               size="small"
-              error={error && kodeKecamatan.length === 0 && true}
-              helperText={
-                error &&
-                kodeKecamatan.length === 0 &&
-                "No. Kecamatan harus diisi!"
-              }
               id="outlined-basic"
               variant="outlined"
-              value={kodeKecamatan}
+              value={caleg}
               InputProps={{
                 readOnly: true
               }}
               sx={{ backgroundColor: Colors.grey400 }}
             />
             <Typography sx={[labelInput, spacingTop]}>
-              Nama Kecamatan
+              Kode Kelurahan
             </Typography>
             <TextField
               size="small"
-              error={error && namaKecamatan.length === 0 && true}
+              error={error && kodeKelurahan.length === 0 && true}
               helperText={
                 error &&
-                namaKecamatan.length === 0 &&
-                "Nama Kecamatan harus diisi!"
+                kodeKelurahan.length === 0 &&
+                "Kode Kelurahan harus diisi!"
               }
               id="outlined-basic"
               variant="outlined"
-              value={namaKecamatan}
-              onChange={(e) => setNamaKecamatan(e.target.value.toUpperCase())}
+              value={kodeKelurahan}
+              InputProps={{
+                readOnly: true
+              }}
+              sx={{ backgroundColor: Colors.grey400 }}
+            />
+            <Typography sx={[labelInput, spacingTop]}>
+              Nama Kelurahan
+            </Typography>
+            <TextField
+              size="small"
+              error={error && namaKelurahan.length === 0 && true}
+              helperText={
+                error &&
+                namaKelurahan.length === 0 &&
+                "Nama Kelurahan harus diisi!"
+              }
+              id="outlined-basic"
+              variant="outlined"
+              value={namaKelurahan}
+              onChange={(e) => setNamaKelurahan(e.target.value.toUpperCase())}
             />
           </Box>
         </Box>
@@ -133,7 +149,7 @@ const TambahKecamatan = () => {
           <Button
             variant="outlined"
             color="secondary"
-            onClick={() => navigate("/daftarKecamatan")}
+            onClick={() => navigate("/daftarKelurahan")}
             sx={{ marginRight: 2 }}
           >
             {"< Kembali"}
@@ -141,9 +157,9 @@ const TambahKecamatan = () => {
           <Button
             variant="contained"
             startIcon={<SaveIcon />}
-            onClick={saveKecamatan}
+            onClick={updateKelurahan}
           >
-            Simpan
+            Ubah
           </Button>
         </Box>
       </Paper>
@@ -159,7 +175,7 @@ const TambahKecamatan = () => {
   );
 };
 
-export default TambahKecamatan;
+export default UbahKelurahan;
 
 const container = {
   p: 4

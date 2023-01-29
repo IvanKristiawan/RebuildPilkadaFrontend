@@ -26,7 +26,7 @@ import SaveIcon from "@mui/icons-material/Save";
 const TambahTps = () => {
   const { user } = useContext(AuthContext);
   const [open, setOpen] = useState(false);
-  const [kecamatan, setKecamatan] = useState("");
+  const [kelurahan, setKelurahan] = useState("");
   const [noTps, setNoTps] = useState("");
   const [namaTps, setNamaTps] = useState("");
   const [noHpSaksi, setNoHpSaksi] = useState("");
@@ -35,7 +35,7 @@ const TambahTps = () => {
   const [totalPemilih, setTotalPemilih] = useState("");
   const [passwordSaksi, setPasswordSaksi] = useState("");
   const [error, setError] = useState(false);
-  const [kecamatans, setKecamatans] = useState([]);
+  const [kelurahans, setKelurahans] = useState([]);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [openAlert, setOpenAlert] = useState(false);
@@ -48,8 +48,8 @@ const TambahTps = () => {
     setOpenAlert(false);
   };
 
-  const kecamatanOptions = kecamatans.map((kecamatan) => ({
-    label: `${kecamatan.kodeKecamatan} - ${kecamatan.namaKecamatan}`
+  const kelurahanOptions = kelurahans.map((kelurahan) => ({
+    label: `${kelurahan.kodeKelurahan} - ${kelurahan.namaKelurahan}`
   }));
 
   const handleClose = (event, reason) => {
@@ -60,35 +60,35 @@ const TambahTps = () => {
   };
 
   useEffect(() => {
-    getKecamatansCalegData();
+    getKelurahansCalegData();
   }, []);
 
-  const getKecamatansCalegData = async () => {
+  const getKelurahansCalegData = async () => {
     setLoading(true);
-    const kecamatans = await axios.post(`${tempUrl}/kecamatansCaleg`, {
+    const kelurahans = await axios.post(`${tempUrl}/kelurahansCaleg`, {
       id: user._id,
       token: user.token
     });
-    setKecamatans(kecamatans.data);
+    setKelurahans(kelurahans.data);
     setLoading(false);
   };
 
   const getNextKodeTpsCaleg = async (value) => {
-    let tempKecamatan = await axios.post(
-      `${tempUrl}/kecamatanCalegByKodeKecamatan`,
+    let tempKelurahan = await axios.post(
+      `${tempUrl}/kelurahanCalegByKodeKelurahan`,
       {
-        kodeKecamatan: value,
+        kodeKelurahan: value,
         id: user._id,
         token: user.token
       }
     );
     const nextKodeTps = await axios.post(`${tempUrl}/tpsNextKode`, {
-      idKecamatan: tempKecamatan.data._id,
+      idKelurahan: tempKelurahan.data._id,
       idCaleg: user._id,
       id: user._id,
       token: user.token
     });
-    setKecamatan(value);
+    setKelurahan(value);
     setNoTps(`${value}${nextKodeTps.data}`);
   };
 
@@ -102,7 +102,7 @@ const TambahTps = () => {
 
     let isFailedValidation =
       noTps.length === 0 ||
-      kecamatan.length === 0 ||
+      kelurahan.length === 0 ||
       namaTps.length === 0 ||
       noHpSaksi.length === 0 ||
       namaSaksi.length === 0 ||
@@ -114,14 +114,16 @@ const TambahTps = () => {
       setOpen(!open);
     } else {
       try {
-        let tempKecamatan = await axios.post(
-          `${tempUrl}/kecamatanCalegByKodeKecamatan`,
+        alert(kelurahan);
+        let tempKelurahan = await axios.post(
+          `${tempUrl}/kelurahanCalegByKodeKelurahan`,
           {
-            kodeKecamatan: kecamatan,
+            kodeKelurahan: kelurahan,
             id: user._id,
             token: user.token
           }
         );
+        alert(namaSaksi);
         let tempNamaSaksi = await axios.post(`${tempUrl}/findTpsNamaSaksi`, {
           namaSaksi,
           id: user._id,
@@ -131,9 +133,12 @@ const TambahTps = () => {
           handleClickOpenAlert();
         } else {
           setLoading(true);
+          alert("2");
+          alert(user._id);
+          alert(tempKelurahan.data._id);
           await axios.post(`${tempUrl}/saveTps`, {
             idCaleg: user._id,
-            idKecamatan: tempKecamatan.data._id,
+            idKelurahan: tempKelurahan.data._id,
             noTps,
             namaTps,
             noHpSaksi,
@@ -147,11 +152,12 @@ const TambahTps = () => {
             id: user._id,
             token: user.token
           });
+          alert("3");
           setLoading(false);
           navigate("/daftarTps");
         }
       } catch (error) {
-        console.log(error);
+        alert(error);
       }
     }
   };
@@ -200,21 +206,21 @@ const TambahTps = () => {
               sx={{ backgroundColor: Colors.grey400 }}
             />
             <Typography sx={[labelInput, spacingTop]}>
-              Kode Kecamatan
+              Kode Kelurahan
             </Typography>
             <Autocomplete
               size="small"
               disablePortal
               id="combo-box-demo"
-              options={kecamatanOptions}
+              options={kelurahanOptions}
               renderInput={(params) => (
                 <TextField
                   size="small"
-                  error={error && kecamatan.length === 0 && true}
+                  error={error && kelurahan.length === 0 && true}
                   helperText={
                     error &&
-                    kecamatan.length === 0 &&
-                    "Kode Kecamatan harus diisi!"
+                    kelurahan.length === 0 &&
+                    "Kode Kelurahan harus diisi!"
                   }
                   {...params}
                 />

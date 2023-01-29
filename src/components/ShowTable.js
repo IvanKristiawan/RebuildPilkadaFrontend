@@ -230,3 +230,70 @@ export function ShowTableDaftarKecamatan({ currentPosts, searchTerm }) {
     </TableContainer>
   );
 }
+
+export function ShowTableDaftarKelurahan({ currentPosts, searchTerm }) {
+  let navigate = useNavigate();
+  const classes = useStyles();
+  return (
+    <TableContainer component={Paper} sx={{ width: "100%" }}>
+      <Table aria-label="simple table">
+        <TableHead className={classes.root}>
+          <TableRow>
+            <TableCell className={classes.tableRightBorder}>Caleg</TableCell>
+            <TableCell className={classes.tableRightBorder}>
+              Kecamatan
+            </TableCell>
+            <TableCell className={classes.tableRightBorder}>Kode</TableCell>
+            <TableCell>Nama</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {currentPosts
+            .filter((val) => {
+              if (searchTerm === "") {
+                return val;
+              } else if (
+                val.idCaleg.nama
+                  .toUpperCase()
+                  .includes(searchTerm.toUpperCase()) ||
+                val.idKecamatan.kodeKecamatan
+                  .toUpperCase()
+                  .includes(searchTerm.toUpperCase()) ||
+                val.idKecamatan.namaKecamatan
+                  .toUpperCase()
+                  .includes(searchTerm.toUpperCase()) ||
+                val.kodeKelurahan
+                  .toUpperCase()
+                  .includes(searchTerm.toUpperCase()) ||
+                val.namaKelurahan
+                  .toUpperCase()
+                  .includes(searchTerm.toUpperCase())
+              ) {
+                return val;
+              }
+            })
+            .map((user, index) => (
+              <TableRow
+                key={user._id}
+                sx={{
+                  "&:last-child td, &:last-child th": { border: 0 },
+                  "&:hover": { bgcolor: Colors.grey300 },
+                  cursor: "pointer"
+                }}
+                onClick={() => {
+                  navigate(`/daftarKelurahan/${user._id}`);
+                }}
+              >
+                <TableCell component="th" scope="row">
+                  {user.idCaleg.nama}
+                </TableCell>
+                <TableCell>{`${user.idKecamatan.kodeKecamatan} - ${user.idKecamatan.namaKecamatan}`}</TableCell>
+                <TableCell>{user.kodeKelurahan}</TableCell>
+                <TableCell>{user.namaKelurahan}</TableCell>
+              </TableRow>
+            ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
+  );
+}

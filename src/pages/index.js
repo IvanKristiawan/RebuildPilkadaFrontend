@@ -19,6 +19,10 @@ export { default as TampilTps } from "./Tps/TampilTps";
 export { default as DaftarKecamatan } from "./Kecamatan/DaftarKecamatan";
 export { default as TambahKecamatan } from "./Kecamatan/TambahKecamatan";
 export { default as UbahKecamatan } from "./Kecamatan/UbahKecamatan";
+// Kelurahan
+export { default as DaftarKelurahan } from "./Kelurahan/DaftarKelurahan";
+export { default as TambahKelurahan } from "./Kelurahan/TambahKelurahan";
+export { default as UbahKelurahan } from "./Kelurahan/UbahKelurahan";
 // Dashboard Tps
 export { default as DashboardTps } from "./DashboardTps/DashboardTps";
 // Dashboard Global

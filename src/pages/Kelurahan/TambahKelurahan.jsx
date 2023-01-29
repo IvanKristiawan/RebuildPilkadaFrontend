@@ -13,18 +13,31 @@ import {
   Divider,
   Snackbar,
   Alert,
-  Paper
+  Paper,
+  Autocomplete
 } from "@mui/material";
 import SaveIcon from "@mui/icons-material/Save";
 
-const TambahKecamatan = () => {
+const TambahKelurahan = () => {
   const { user } = useContext(AuthContext);
   const [open, setOpen] = useState(false);
-  const [kodeKecamatan, setKodeKecamatan] = useState("");
-  const [namaKecamatan, setNamaKecamatan] = useState("");
+  const [caleg, setCaleg] = useState("");
+  const [kecamatan, setKecamatan] = useState("");
+  const [kodeKelurahan, setKodeKelurahan] = useState("");
+  const [namaKelurahan, setNamaKelurahan] = useState("");
   const [error, setError] = useState(false);
+  const [calegs, setCalegs] = useState([]);
+  const [kecamatans, setKecamatans] = useState([]);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+
+  const calegOptions = calegs.map((caleg) => ({
+    label: `${caleg._id} - ${caleg.nama}`
+  }));
+
+  const kecamatanOptions = kecamatans.map((kecamatan) => ({
+    label: `${kecamatan.kodeKecamatan} - ${kecamatan.namaKecamatan}`
+  }));
 
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -34,19 +47,51 @@ const TambahKecamatan = () => {
   };
 
   useEffect(() => {
-    getNextKodeKecamatan();
+    getCalegsData();
+    getKecamatansCalegData();
+    // getNextKodeKelurahan();
   }, []);
 
-  const getNextKodeKecamatan = async (value) => {
-    const nextKodeKecamatan = await axios.post(`${tempUrl}/kecamatanNextKode`, {
-      idCaleg: user._id,
+  const getCalegsData = async () => {
+    setLoading(true);
+    const allCalegs = await axios.post(`${tempUrl}/usersCaleg`, {
       id: user._id,
       token: user.token
     });
-    setKodeKecamatan(nextKodeKecamatan.data);
+    setCalegs(allCalegs.data);
+    setLoading(false);
   };
 
-  const saveKecamatan = async (e) => {
+  const getKecamatansCalegData = async () => {
+    setLoading(true);
+    const kecamatans = await axios.post(`${tempUrl}/kecamatansCaleg`, {
+      id: user._id,
+      token: user.token
+    });
+    setKecamatans(kecamatans.data);
+    setLoading(false);
+  };
+
+  const getNextKodeKelurahan = async (value) => {
+    let tempKecamatan = await axios.post(
+      `${tempUrl}/kecamatanCalegByKodeKecamatan`,
+      {
+        kodeKecamatan: value,
+        id: user._id,
+        token: user.token
+      }
+    );
+    const nextKodeKelurahan = await axios.post(`${tempUrl}/kelurahanNextKode`, {
+      idCaleg: user._id,
+      idKecamatan: tempKecamatan.data._id,
+      id: user._id,
+      token: user.token
+    });
+    setKecamatan(value);
+    setKodeKelurahan(`${value}${nextKodeKelurahan.data}`);
+  };
+
+  const saveKelurahan = async (e) => {
     e.preventDefault();
     var date = new Date();
     var current_date =
@@ -55,17 +100,26 @@ const TambahKecamatan = () => {
       date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
 
     let isFailedValidation =
-      kodeKecamatan.length === 0 || namaKecamatan.length === 0;
+      kodeKelurahan.length === 0 || namaKelurahan.length === 0;
     if (isFailedValidation) {
       setError(true);
       setOpen(!open);
     } else {
       try {
         setLoading(true);
-        await axios.post(`${tempUrl}/saveKecamatan`, {
+        let tempKecamatan = await axios.post(
+          `${tempUrl}/kecamatanCalegByKodeKecamatan`,
+          {
+            kodeKecamatan: kecamatan,
+            id: user._id,
+            token: user.token
+          }
+        );
+        await axios.post(`${tempUrl}/saveKelurahan`, {
           idCaleg: user._id,
-          kodeKecamatan,
-          namaKecamatan,
+          idKecamatan: tempKecamatan.data._id,
+          kodeKelurahan,
+          namaKelurahan,
           tglInput: current_date,
           jamInput: current_time,
           userInput: user.nama,
@@ -73,7 +127,7 @@ const TambahKecamatan = () => {
           token: user.token
         });
         setLoading(false);
-        navigate("/daftarKecamatan");
+        navigate("/daftarKelurahan");
       } catch (error) {
         console.log(error);
       }
@@ -86,46 +140,74 @@ const TambahKecamatan = () => {
 
   return (
     <Box sx={container}>
-      <Typography color="#757575">Daftar Kecamatan</Typography>
+      <Typography color="#757575">Daftar Kelurahan</Typography>
       <Typography variant="h4" sx={subTitleText}>
-        Tambah Kecamatan
+        Tambah Kelurahan
       </Typography>
       <Divider sx={dividerStyle} />
       <Paper sx={contentContainer} elevation={12}>
         <Box sx={showDataContainer}>
           <Box sx={showDataWrapper}>
-            <Typography sx={labelInput}>No. Kecamatan</Typography>
+            <Typography sx={labelInput}>Kode Kelurahan</Typography>
             <TextField
               size="small"
-              error={error && kodeKecamatan.length === 0 && true}
+              error={error && kodeKelurahan.length === 0 && true}
               helperText={
                 error &&
-                kodeKecamatan.length === 0 &&
-                "No. Kecamatan harus diisi!"
+                kodeKelurahan.length === 0 &&
+                "Kode Kelurahan harus diisi!"
               }
               id="outlined-basic"
               variant="outlined"
-              value={kodeKecamatan}
+              value={kodeKelurahan}
               InputProps={{
                 readOnly: true
               }}
               sx={{ backgroundColor: Colors.grey400 }}
             />
             <Typography sx={[labelInput, spacingTop]}>
-              Nama Kecamatan
+              Kode Kecamatan
+            </Typography>
+            <Autocomplete
+              size="small"
+              disablePortal
+              id="combo-box-demo"
+              options={kecamatanOptions}
+              renderInput={(params) => (
+                <TextField
+                  size="small"
+                  error={error && kecamatan.length === 0 && true}
+                  helperText={
+                    error &&
+                    kecamatan.length === 0 &&
+                    "Kode Kecamatan harus diisi!"
+                  }
+                  {...params}
+                />
+              )}
+              onInputChange={(e, value) => {
+                if (value) {
+                  getNextKodeKelurahan(value.split(" ", 1)[0]);
+                } else {
+                  setKodeKelurahan("");
+                }
+              }}
+            />
+            <Typography sx={[labelInput, spacingTop]}>
+              Nama Kelurahan
             </Typography>
             <TextField
               size="small"
-              error={error && namaKecamatan.length === 0 && true}
+              error={error && namaKelurahan.length === 0 && true}
               helperText={
                 error &&
-                namaKecamatan.length === 0 &&
-                "Nama Kecamatan harus diisi!"
+                namaKelurahan.length === 0 &&
+                "Nama Kelurahan harus diisi!"
               }
               id="outlined-basic"
               variant="outlined"
-              value={namaKecamatan}
-              onChange={(e) => setNamaKecamatan(e.target.value.toUpperCase())}
+              value={namaKelurahan}
+              onChange={(e) => setNamaKelurahan(e.target.value.toUpperCase())}
             />
           </Box>
         </Box>
@@ -133,7 +215,7 @@ const TambahKecamatan = () => {
           <Button
             variant="outlined"
             color="secondary"
-            onClick={() => navigate("/daftarKecamatan")}
+            onClick={() => navigate("/daftarKelurahan")}
             sx={{ marginRight: 2 }}
           >
             {"< Kembali"}
@@ -141,7 +223,7 @@ const TambahKecamatan = () => {
           <Button
             variant="contained"
             startIcon={<SaveIcon />}
-            onClick={saveKecamatan}
+            onClick={saveKelurahan}
           >
             Simpan
           </Button>
@@ -159,7 +241,7 @@ const TambahKecamatan = () => {
   );
 };
 
-export default TambahKecamatan;
+export default TambahKelurahan;
 
 const container = {
   p: 4

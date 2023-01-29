@@ -11,9 +11,9 @@ const DashboardGlobal = () => {
 
   useEffect(() => {
     getTotalSuaraData();
-    setInterval(async () => {
-      getTotalSuaraData();
-    }, 5000);
+    // setInterval(async () => {
+    //   getTotalSuaraData();
+    // }, 5000);
   }, []);
 
   const getTotalSuaraData = async () => {

@@ -27,6 +27,7 @@ import ReduceCapacityIcon from "@mui/icons-material/ReduceCapacity";
 import PersonPinIcon from "@mui/icons-material/PersonPin";
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 import ListAltIcon from "@mui/icons-material/ListAlt";
+import HolidayVillageIcon from "@mui/icons-material/HolidayVillage";
 // Import Page
 import {
   Home,
@@ -43,6 +44,9 @@ import {
   DaftarKecamatan,
   TambahKecamatan,
   UbahKecamatan,
+  DaftarKelurahan,
+  TambahKelurahan,
+  UbahKelurahan,
   TambahTps,
   UbahTps,
   TampilTps
@@ -194,11 +198,19 @@ const App = () => {
                 )}
                 <Divider />
                 {user.tipeUser && (
-                  <Link to="/daftarKecamatan" style={linkText}>
-                    <MenuItem icon={<ReduceCapacityIcon name="kecamatan" />}>
-                      Daftar Kecamatan
-                    </MenuItem>
-                  </Link>
+                  <>
+                    <Link to="/daftarKecamatan" style={linkText}>
+                      <MenuItem icon={<ReduceCapacityIcon name="kecamatan" />}>
+                        Daftar Kecamatan
+                      </MenuItem>
+                    </Link>
+                    <Divider />
+                    <Link to="/daftarKelurahan" style={linkText}>
+                      <MenuItem icon={<HolidayVillageIcon name="kelurahan" />}>
+                        Daftar Kelurahan
+                      </MenuItem>
+                    </Link>
+                  </>
                 )}
                 <Divider />
                 {user.tipeUser && (
@@ -372,6 +384,39 @@ const App = () => {
                     element={
                       <ADMINCALEGRoute>
                         <TambahKecamatan />
+                      </ADMINCALEGRoute>
+                    }
+                  />
+                  {/* Daftar Kelurahan */}
+                  <Route
+                    path="/daftarKelurahan"
+                    element={
+                      <ADMINCALEGRoute>
+                        <DaftarKelurahan />
+                      </ADMINCALEGRoute>
+                    }
+                  />
+                  <Route
+                    path="/daftarKelurahan/:id"
+                    element={
+                      <ADMINCALEGRoute>
+                        <DaftarKelurahan />
+                      </ADMINCALEGRoute>
+                    }
+                  />
+                  <Route
+                    path="/daftarKelurahan/:id/edit"
+                    element={
+                      <ADMINCALEGRoute>
+                        <UbahKelurahan />
+                      </ADMINCALEGRoute>
+                    }
+                  />
+                  <Route
+                    path="/daftarKelurahan/tambahKelurahan"
+                    element={
+                      <ADMINCALEGRoute>
+                        <TambahKelurahan />
                       </ADMINCALEGRoute>
                     }
                   />
