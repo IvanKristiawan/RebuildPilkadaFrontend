@@ -21,7 +21,6 @@ const UbahKelurahan = () => {
   const { user } = useContext(AuthContext);
   const [open, setOpen] = useState(false);
   const [caleg, setCaleg] = useState("");
-  // const [kecamatan, setKecamatan] = useState("");
   const [kodeKelurahan, setKodeKelurahan] = useState("");
   const [namaKelurahan, setNamaKelurahan] = useState("");
   const [error, setError] = useState(false);
