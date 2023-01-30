@@ -42,7 +42,11 @@ const LoginCaleg = () => {
         password
       });
       dispatch({ type: "LOGIN_SUCCESS", payload: res.data.details });
-      navigate("/");
+      if (res.data.details.tipeUser === "CALEG") {
+        navigate("/dashboardGlobal");
+      } else {
+        navigate("/daftarUser");
+      }
     } catch (err) {
       setOpen(true);
       dispatch({ type: "LOGIN_FAILURE", payload: err.response.data });
