@@ -24,6 +24,7 @@ export { default as DaftarKelurahan } from "./Kelurahan/DaftarKelurahan";
 export { default as TambahKelurahan } from "./Kelurahan/TambahKelurahan";
 export { default as UbahKelurahan } from "./Kelurahan/UbahKelurahan";
 // Dashboard Tps
-export { default as DashboardTps } from "./DashboardTps/DashboardTps";
+export { default as DashboardTpsPerKecamatan } from "./DashboardTps/PerKecamatan/DashboardTpsPerKecamatan";
+export { default as DashboardTpsPerKelurahan } from "./DashboardTps/PerKelurahan/DashboardTpsPerKelurahan";
 // Dashboard Global
 export { default as DashboardGlobal } from "./DashboardGlobal/DashboardGlobal";

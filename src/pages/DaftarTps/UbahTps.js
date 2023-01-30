@@ -26,7 +26,7 @@ const UbahTps = () => {
   const { user } = useContext(AuthContext);
   const [open, setOpen] = useState(false);
   const [caleg, setCaleg] = useState("");
-  const [kecamatan, setKecamatan] = useState("");
+  const [kelurahan, setKelurahan] = useState("");
   const [noTps, setNoTps] = useState("");
   const [namaTps, setNamaTps] = useState("");
   const [noHpSaksi, setNoHpSaksi] = useState("");
@@ -78,8 +78,8 @@ const UbahTps = () => {
     setTotalPemilih(pickedTps.data.totalPemilih);
     setPasswordSaksiAwal(pickedTps.data.passwordSaksi);
     setCaleg(pickedTps.data.idCaleg.nama);
-    setKecamatan(
-      `${pickedTps.data.idKecamatan.kodeKecamatan} - ${pickedTps.data.idKecamatan.namaKecamatan}`
+    setKelurahan(
+      `${pickedTps.data.idKelurahan.kodeKelurahan} - ${pickedTps.data.idKelurahan.namaKelurahan}`
     );
     setLoading(false);
   };
@@ -175,12 +175,12 @@ const UbahTps = () => {
               }}
               sx={{ backgroundColor: Colors.grey400 }}
             />
-            <Typography sx={[labelInput, spacingTop]}>Kecamatan</Typography>
+            <Typography sx={[labelInput, spacingTop]}>Kelurahan</Typography>
             <TextField
               size="small"
               id="outlined-basic"
               variant="outlined"
-              value={kecamatan}
+              value={kelurahan}
               InputProps={{
                 readOnly: true
               }}

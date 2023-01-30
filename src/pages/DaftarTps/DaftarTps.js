@@ -34,6 +34,7 @@ const DaftarTps = () => {
   const [isFetchError, setIsFetchError] = useState(false);
   const [caleg, setCaleg] = useState("");
   const [kecamatan, setKecamatan] = useState("");
+  const [kelurahan, setKelurahan] = useState("");
   const [noTps, setNoTps] = useState("");
   const [namaTps, setNamaTps] = useState("");
   const [noHpSaksi, setNoHpSaksi] = useState("");
@@ -50,6 +51,7 @@ const DaftarTps = () => {
   const columns = [
     { title: "Caleg", field: "caleg" },
     { title: "Kecamatan", field: "kecamatan" },
+    { title: "Kelurahan", field: "kelurahan" },
     { title: "No. TPS", field: "noTps" },
     { title: "Nama TPS", field: "namaTps" },
     { title: "No. HP Saksi", field: "noHpSaksi" },
@@ -74,6 +76,12 @@ const DaftarTps = () => {
         .toUpperCase()
         .includes(searchTerm.toUpperCase()) ||
       val.idKecamatan.namaKecamatan
+        .toUpperCase()
+        .includes(searchTerm.toUpperCase()) ||
+      val.idKelurahan.kodeKelurahan
+        .toUpperCase()
+        .includes(searchTerm.toUpperCase()) ||
+      val.idKelurahan.namaKelurahan
         .toUpperCase()
         .includes(searchTerm.toUpperCase()) ||
       val.noTps.toUpperCase().includes(searchTerm.toUpperCase()) ||
@@ -166,6 +174,9 @@ const DaftarTps = () => {
       setKecamatan(
         `${pickedTps.data.idKecamatan.kodeKecamatan} - ${pickedTps.data.idKecamatan.namaKecamatan}`
       );
+      setKelurahan(
+        `${pickedTps.data.idKelurahan.kodeKelurahan} - ${pickedTps.data.idKelurahan.namaKelurahan}`
+      );
       setNoTps(pickedTps.data.noTps);
       setNamaTps(pickedTps.data.namaTps);
       setNoHpSaksi(pickedTps.data.noHpSaksi);
@@ -185,6 +196,7 @@ const DaftarTps = () => {
       });
       setNoTps("");
       setKecamatan("");
+      setKelurahan("");
       setNamaTps("");
       setNoHpSaksi("");
       setNamaSaksi("");
@@ -297,6 +309,16 @@ const DaftarTps = () => {
                   readOnly: true
                 }}
                 value={kecamatan}
+              />
+              <Typography sx={[labelInput, spacingTop]}>Kelurahan</Typography>
+              <TextField
+                size="small"
+                id="outlined-basic"
+                variant="filled"
+                InputProps={{
+                  readOnly: true
+                }}
+                value={kelurahan}
               />
               <Typography sx={[labelInput, spacingTop]}>No. TPS</Typography>
               <TextField

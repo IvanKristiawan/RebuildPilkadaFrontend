@@ -3,7 +3,13 @@ import React, { useContext, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Routes, Route, Navigate, BrowserRouter } from "react-router-dom";
 import { Header, ChipUser } from "./components";
-import { Sidebar, Menu, MenuItem, useProSidebar } from "react-pro-sidebar";
+import {
+  Sidebar,
+  SubMenu,
+  Menu,
+  MenuItem,
+  useProSidebar
+} from "react-pro-sidebar";
 import {
   Divider,
   Box,
@@ -36,7 +42,8 @@ import {
   DaftarUser,
   TambahUser,
   UbahUser,
-  DashboardTps,
+  DashboardTpsPerKecamatan,
+  DashboardTpsPerKelurahan,
   DashboardGlobal,
   ProfilCaleg,
   UbahProfilCaleg,
@@ -183,11 +190,32 @@ const App = () => {
                       </MenuItem>
                     </Link>
                     <Divider />
-                    <Link to="/dashboardTps" style={linkText}>
-                      <MenuItem icon={<BarChartIcon name="dashboardTps" />}>
-                        Dashboard TPS
-                      </MenuItem>
-                    </Link>
+                    <SubMenu
+                      label="Dashboard TPS"
+                      icon={<BarChartIcon name="dashboard-tps-icon" />}
+                    >
+                      <Link to="/dashboardTpsPerKecamatan" style={linkText}>
+                        <MenuItem>
+                          <Typography
+                            variant="body2"
+                            sx={{ paddingLeft: "70px" }}
+                          >
+                            Per Kecamatan
+                          </Typography>
+                        </MenuItem>
+                      </Link>
+                      <Divider />
+                      <Link to="/dashboardTpsPerKelurahan" style={linkText}>
+                        <MenuItem>
+                          <Typography
+                            variant="body2"
+                            sx={{ paddingLeft: "70px" }}
+                          >
+                            Per Kelurahan
+                          </Typography>
+                        </MenuItem>
+                      </Link>
+                    </SubMenu>
                     <Divider />
                     <Link to="/profilCaleg" style={linkText}>
                       <MenuItem icon={<PersonPinIcon name="caleg" />}>
@@ -286,12 +314,21 @@ const App = () => {
                       </ADMINRoute>
                     }
                   />
-                  {/* Dashboard Tps */}
+                  {/* Dashboard Tps Per Kecamatan */}
                   <Route
-                    path="/dashboardTps"
+                    path="/dashboardTpsPerKecamatan"
                     element={
                       <CALEGRoute>
-                        <DashboardTps />
+                        <DashboardTpsPerKecamatan />
+                      </CALEGRoute>
+                    }
+                  />
+                  {/* Dashboard Tps Per Kelurahan */}
+                  <Route
+                    path="/dashboardTpsPerKelurahan"
+                    element={
+                      <CALEGRoute>
+                        <DashboardTpsPerKelurahan />
                       </CALEGRoute>
                     }
                   />

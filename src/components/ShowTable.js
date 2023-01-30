@@ -93,6 +93,9 @@ export function ShowTableDaftarTps({ currentPosts, searchTerm, tipeUser }) {
             <TableCell className={classes.tableRightBorder}>
               Kecamatan
             </TableCell>
+            <TableCell className={classes.tableRightBorder}>
+              Kelurahan
+            </TableCell>
             <TableCell className={classes.tableRightBorder}>No. TPS</TableCell>
             <TableCell className={classes.tableRightBorder}>Nama TPS</TableCell>
             <TableCell className={classes.tableRightBorder}>
@@ -117,6 +120,12 @@ export function ShowTableDaftarTps({ currentPosts, searchTerm, tipeUser }) {
                   .toUpperCase()
                   .includes(searchTerm.toUpperCase()) ||
                 val.idKecamatan.namaKecamatan
+                  .toUpperCase()
+                  .includes(searchTerm.toUpperCase()) ||
+                val.idKelurahan.kodeKelurahan
+                  .toUpperCase()
+                  .includes(searchTerm.toUpperCase()) ||
+                val.idKelurahan.namaKelurahan
                   .toUpperCase()
                   .includes(searchTerm.toUpperCase()) ||
                 val.noTps.toUpperCase().includes(searchTerm.toUpperCase()) ||
@@ -161,6 +170,7 @@ export function ShowTableDaftarTps({ currentPosts, searchTerm, tipeUser }) {
                   </TableCell>
                 )}
                 <TableCell>{`${user.idKecamatan.kodeKecamatan} - ${user.idKecamatan.namaKecamatan}`}</TableCell>
+                <TableCell>{`${user.idKelurahan.kodeKelurahan} - ${user.idKelurahan.namaKelurahan}`}</TableCell>
                 <TableCell>{user.noTps}</TableCell>
                 <TableCell>{user.namaTps}</TableCell>
                 <TableCell>{user.totalPemilih.toLocaleString()}</TableCell>

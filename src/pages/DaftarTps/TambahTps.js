@@ -114,7 +114,6 @@ const TambahTps = () => {
       setOpen(!open);
     } else {
       try {
-        alert(kelurahan);
         let tempKelurahan = await axios.post(
           `${tempUrl}/kelurahanCalegByKodeKelurahan`,
           {
@@ -123,7 +122,6 @@ const TambahTps = () => {
             token: user.token
           }
         );
-        alert(namaSaksi);
         let tempNamaSaksi = await axios.post(`${tempUrl}/findTpsNamaSaksi`, {
           namaSaksi,
           id: user._id,
@@ -133,11 +131,9 @@ const TambahTps = () => {
           handleClickOpenAlert();
         } else {
           setLoading(true);
-          alert("2");
-          alert(user._id);
-          alert(tempKelurahan.data._id);
           await axios.post(`${tempUrl}/saveTps`, {
             idCaleg: user._id,
+            idKecamatan: tempKelurahan.data.idKecamatan,
             idKelurahan: tempKelurahan.data._id,
             noTps,
             namaTps,
@@ -152,7 +148,6 @@ const TambahTps = () => {
             id: user._id,
             token: user.token
           });
-          alert("3");
           setLoading(false);
           navigate("/daftarTps");
         }

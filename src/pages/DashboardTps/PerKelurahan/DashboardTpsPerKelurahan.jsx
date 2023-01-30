@@ -1,8 +1,8 @@
 import React, { useState, useContext, useEffect } from "react";
 import axios from "axios";
-import { AuthContext } from "../../contexts/AuthContext";
-import { tempUrl } from "../../contexts/ContextProvider";
-import { Loader } from "../../components";
+import { AuthContext } from "../../../contexts/AuthContext";
+import { tempUrl } from "../../../contexts/ContextProvider";
+import { Loader } from "../../../components";
 import {
   Box,
   TextField,
@@ -22,12 +22,12 @@ import {
 import SearchIcon from "@mui/icons-material/Search";
 import { Chart } from "react-google-charts";
 
-const DashboardTps = () => {
+const DashboardTpsPerKelurahan = () => {
   const { user, dispatch } = useContext(AuthContext);
   const [open, setOpen] = useState(false);
   const [openChart, setOpenChart] = useState(false);
-  const [kecamatan, setKecamatan] = useState("");
-  const [kecamatans, setKecamatans] = useState([]);
+  const [kelurahan, setKelurahan] = useState("");
+  const [kelurahans, setKelurahans] = useState([]);
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
   const [dataBarChart, setDataBarChart] = useState([]);
@@ -49,73 +49,73 @@ const DashboardTps = () => {
     setOpen(false);
   };
 
-  const kecamatanOptions = kecamatans.map((kecamatan) => ({
-    label: `${kecamatan.kodeKecamatan} - ${kecamatan.namaKecamatan}`
+  const kelurahanOptions = kelurahans.map((kelurahan) => ({
+    label: `${kelurahan.kodeKelurahan} - ${kelurahan.namaKelurahan}`
   }));
 
   useEffect(() => {
-    getKecamatansCalegData();
+    getKelurahansCalegData();
   }, []);
 
-  const getKecamatansCalegData = async () => {
+  const getKelurahansCalegData = async () => {
     setLoading(true);
-    const kecamatans = await axios.post(`${tempUrl}/kecamatansCaleg`, {
+    const kelurahans = await axios.post(`${tempUrl}/kelurahansCaleg`, {
       id: user._id,
       token: user.token
     });
-    setKecamatans(kecamatans.data);
+    setKelurahans(kelurahans.data);
     setLoading(false);
   };
 
-  const cariTpsByKecamatan = async () => {
+  const cariTpsByKelurahan = async () => {
     let totalPemilih = 0;
     let totalJumlahPemilih = 0;
     let totalTargetSuara = 0;
 
-    let isFailedValidation = kecamatan.length === 0;
+    let isFailedValidation = kelurahan.length === 0;
     if (isFailedValidation) {
       setError(true);
       setOpen(!open);
     } else {
-      let tempKecamatan = await axios.post(
-        `${tempUrl}/kecamatanCalegByKodeKecamatan`,
+      let tempKelurahan = await axios.post(
+        `${tempUrl}/kelurahanCalegByKodeKelurahan`,
         {
-          kodeKecamatan: kecamatan,
+          kodeKelurahan: kelurahan,
           id: user._id,
           token: user.token
         }
       );
-      const kecamatans = await axios.post(`${tempUrl}/allTpsCalegByKecamatan`, {
-        idKecamatan: tempKecamatan.data._id,
+      const kelurahans = await axios.post(`${tempUrl}/allTpsCalegByKelurahan`, {
+        idKelurahan: tempKelurahan.data._id,
         id: user._id,
         token: user.token
       });
-      if (kecamatans.data.length > 0) {
+      if (kelurahans.data.length > 0) {
         let tempDataBarChart = [
           ["TPS", "Total Pemilih", "Target Suara", "Jumlah Pemilih"]
         ];
         let tempTotalDataBarChart = [
           ["TotalTPS", "Total Pemilih", "Target Suara", "Jumlah Pemilih"]
         ];
-        for (let i = 0; i < kecamatans.data.length; i++) {
-          let tempTpsKecamatan = [
-            `${kecamatans.data[i].namaTps}`,
-            kecamatans.data[i].totalPemilih,
-            kecamatans.data[i].targetSuara,
-            kecamatans.data[i].jumlahPemilih
+        for (let i = 0; i < kelurahans.data.length; i++) {
+          let tempTpsKelurahan = [
+            `${kelurahans.data[i].namaTps}`,
+            kelurahans.data[i].totalPemilih,
+            kelurahans.data[i].targetSuara,
+            kelurahans.data[i].jumlahPemilih
           ];
-          totalPemilih += kecamatans.data[i].totalPemilih;
-          totalTargetSuara += kecamatans.data[i].targetSuara;
-          totalJumlahPemilih += kecamatans.data[i].jumlahPemilih;
-          tempDataBarChart.push(tempTpsKecamatan);
+          totalPemilih += kelurahans.data[i].totalPemilih;
+          totalTargetSuara += kelurahans.data[i].targetSuara;
+          totalJumlahPemilih += kelurahans.data[i].jumlahPemilih;
+          tempDataBarChart.push(tempTpsKelurahan);
         }
-        let tempTotalTpsKecamatan = [
+        let tempTotalTpsKelurahan = [
           `Total Semua Tps`,
           totalPemilih,
           totalTargetSuara,
           totalJumlahPemilih
         ];
-        tempTotalDataBarChart.push(tempTotalTpsKecamatan);
+        tempTotalDataBarChart.push(tempTotalTpsKelurahan);
         setTotalDataBarChart(tempTotalDataBarChart);
         setDataBarChart(tempDataBarChart);
         setOpenChart(true);
@@ -133,7 +133,7 @@ const DashboardTps = () => {
     <Box sx={container}>
       <Typography color="#757575">Dashboard TPS</Typography>
       <Typography variant="h4" sx={subTitleText}>
-        TPS Per Kecamatan
+        TPS Per Kelurahan
       </Typography>
       <Dialog
         open={openAlert}
@@ -144,7 +144,7 @@ const DashboardTps = () => {
         <DialogTitle id="alert-dialog-title">{`Tidak Ada TPS`}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-slide-description">
-            {`Tidak ada Data TPS di Kecamatan ini!`}
+            {`Tidak ada Data TPS di Kelurahan ini!`}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
@@ -152,24 +152,24 @@ const DashboardTps = () => {
         </DialogActions>
       </Dialog>
       <Divider sx={dividerStyle} />
-      <Typography sx={[labelInput, spacingTop]}>Kode Kecamatan</Typography>
+      <Typography sx={[labelInput, spacingTop]}>Kode Kelurahan</Typography>
       <Autocomplete
         size="small"
         disablePortal
         id="combo-box-demo"
-        options={kecamatanOptions}
+        options={kelurahanOptions}
         renderInput={(params) => (
           <TextField
             size="small"
-            error={error && kecamatan.length === 0 && true}
+            error={error && kelurahan.length === 0 && true}
             helperText={
-              error && kecamatan.length === 0 && "Kode Kecamatan harus diisi!"
+              error && kelurahan.length === 0 && "Kode Kelurahan harus diisi!"
             }
             {...params}
           />
         )}
         onInputChange={(e, value) => {
-          setKecamatan(value.split(" ", 1)[0]);
+          setKelurahan(value.split(" ", 1)[0]);
         }}
       />
 
@@ -177,7 +177,7 @@ const DashboardTps = () => {
         <Button
           variant="contained"
           startIcon={<SearchIcon />}
-          onClick={cariTpsByKecamatan}
+          onClick={cariTpsByKelurahan}
         >
           Cari
         </Button>
@@ -188,7 +188,7 @@ const DashboardTps = () => {
           <Divider sx={dividerStyle} />
           <Paper sx={graphContainer} elevation={8}>
             <Typography sx={[labelInput, graphTitle]}>
-              Suara TPS Per Kecamatan
+              Suara TPS Per Kelurahan
             </Typography>
             <Chart
               chartType="BarChart"
@@ -200,7 +200,7 @@ const DashboardTps = () => {
           <Divider sx={dividerStyle} />
           <Paper sx={graphContainer} elevation={8}>
             <Typography sx={[labelInput, graphTitle]}>
-              Akumulasi Total TPS Kecamatan
+              Akumulasi Total TPS Kelurahan
             </Typography>
             <Chart
               chartType="ColumnChart"
@@ -222,7 +222,7 @@ const DashboardTps = () => {
   );
 };
 
-export default DashboardTps;
+export default DashboardTpsPerKelurahan;
 
 const container = {
   p: 4
